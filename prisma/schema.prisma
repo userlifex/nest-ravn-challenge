@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String @id() @default(uuid())
+  name            String @db.VarChar(50)
+  email           String @unique
+  hash            String 
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  verifiedAt      DateTime?
+  tokens          Token[]
+  manager         Manager?
+  customer        Customer?
+
+  @@map("users")
+}
+
+model Manager {
+  id              String @id() @default(uuid())
+  userId          String
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("managers")
+}
+
+model Customer {
+  id              String @id() @default(uuid())
+  userId          String
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  shopCart        ShopCart?
+  orders          Order[]
+  likes 	  Like[]
+
+  @@map("customers")
+}
+
+model Category {
+  id              String @id() @default(uuid())
+  name            String
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              String @id() @default(uuid())
+  categoryId	  String? @map("category_id")
+  name            String
+  price           Decimal
+  stock           Int
+  description     String
+  imageUrl        String @map("image_url")
+  numLikes        Int @map("num_likes")
+
+  category 	  Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  likes           Like[]
+  itemsInCart     ItemsInCart[]
+  itemsOrdered 	  ItemOrdered[]
+
+  @@map("products") 
+}
+
+model Token {
+  id              String @id() @default(uuid())
+  userId          String @map("user_id")
+  token           String
+  type            TypeToken
+  expirationDate  DateTime @map("expiration_date")
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("tokens")
+}
+
+enum TypeToken {
+  access
+  validate
+}
+
+
+model ShopCart {
+  id              String @id() @default(uuid())
+  customerId      String
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  itemsInCart     ItemsInCart[]
+
+  @@map("shop_carts")
+}
+
+model ItemsInCart {
+  id              String @id() @default(uuid())
+  shopCartId      String
+  productId       String
+  quantity        Int @default(0)
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  shopCart        ShopCart @relation(fields: [shopCartId], references: [id], onDelete: SetNull)
+  product         Product @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@map("items_in_cart")
+}
+
+model Order {
+  id              String @id() @default(uuid())
+  customerId      String 
+  total  	  Decimal
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  itemsOrdered ItemOrdered[]
+
+  @@map("orders")
+}
+
+model ItemOrdered {
+  id              String @id() @default(uuid())
+  productId       String
+  orderId 	  String
+  quantity        Int @default(0)
+  sellPrice       Decimal @map("sell_price") 
+  subTotal 	  Decimal @map("sub_total")
+
+  createdAt  	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  product         Product @relation(fields: [productId], references: [id], onDelete: SetNull)
+  order 	  Order @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  @@map("items_ordered")
+}
+
+
+model Like {
+  id        	  String   @id @default(uuid())
+  customerId      String   @map("customer_id")
+  productId 	  String  @map("product_id")
+
+  createdAt 	  DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  customer        Customer  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  product         Product  @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@unique([customerId, productId], name: "product_customer_like")
+
+  @@map("likes")
+}
