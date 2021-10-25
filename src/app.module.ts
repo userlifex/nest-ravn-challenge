@@ -9,6 +9,7 @@ import { ItemsOrderedModule } from './items-ordered/items-ordered.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
     OrdersModule,
     ItemsInCartModule,
     ItemsOrderedModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
