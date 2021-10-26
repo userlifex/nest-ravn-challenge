@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -9,12 +8,9 @@ import { ItemsOrderedModule } from './items-ordered/items-ordered.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     ProductsModule,
     CategoriesModule,
@@ -22,8 +18,6 @@ import { TokensModule } from './tokens/tokens.module';
     OrdersModule,
     ItemsInCartModule,
     ItemsOrderedModule,
-    PrismaModule,
-    TokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],
