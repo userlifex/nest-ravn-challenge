@@ -14,7 +14,8 @@ model User {
   id              String @id() @default(uuid())
   name            String @db.VarChar(50)
   email           String @unique
-  password        String 
+  password        String
+  roles           Roles @default(customer) 
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
@@ -174,4 +175,9 @@ model Like {
   @@unique([customerId, productId], name: "product_customer_like")
 
   @@map("likes")
+}
+
+enum Roles {
+  customer
+  moderator
 }
