@@ -37,13 +37,22 @@ export class CategoriesService implements ICrud<Category> {
   }
 
   async findOneById(id: string): Promise<Category> {
-    const category = await this.validateById(id);
+    const category = await this.prismaService.category.findUnique({
+      where: {
+        id,
+      },
+      rejectOnNotFound: false,
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
 
     return category;
   }
 
   async update(id: string, input: UpdateCategoryDto): Promise<Category> {
-    await this.validateById(id);
+    await this.findOneById(id);
 
     return this.prismaService.category.update({
       where: {
@@ -56,23 +65,8 @@ export class CategoriesService implements ICrud<Category> {
   }
 
   async delete(id: string): Promise<Category> {
-    await this.validateById(id);
+    await this.findOneById(id);
 
     return this.prismaService.category.delete({ where: { id } });
-  }
-
-  async validateById(id: string): Promise<Category> {
-    const category = await this.prismaService.category.findUnique({
-      where: {
-        id,
-      },
-      rejectOnNotFound: false,
-    });
-
-    if (!category) {
-      throw new NotFoundException();
-    }
-
-    return category;
   }
 }
