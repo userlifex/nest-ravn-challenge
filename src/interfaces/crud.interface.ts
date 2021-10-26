@@ -1,7 +1,7 @@
 import { IBaseDto } from './base-dto.interface';
 
 export interface ICrud<T> {
-  find(): Promise<T[]>;
+  find(): Promise<T[] | IBaseDto[]>;
 
   findOneById(id: string): Promise<T>;
 
