@@ -22,7 +22,7 @@ export class CategoriesService implements ICrud<Category> {
     });
 
     if (category) {
-      throw new BadRequestException('resource already exists');
+      throw new BadRequestException('recurso ya existe');
     }
 
     return this.prismaService.category.create({

@@ -1,12 +1,13 @@
 -- CreateEnum
-CREATE TYPE "TypeToken" AS ENUM ('access', 'validate');
+CREATE TYPE "Roles" AS ENUM ('customer', 'moderator');
 
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(50) NOT NULL,
     "email" TEXT NOT NULL,
-    "hash" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "roles" "Roles" NOT NULL DEFAULT E'customer',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "verifiedAt" TIMESTAMP(3),
@@ -63,7 +64,6 @@ CREATE TABLE "tokens" (
     "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
     "token" TEXT NOT NULL,
-    "type" "TypeToken" NOT NULL,
     "expiration_date" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE "tokens" (
 -- CreateTable
 CREATE TABLE "shop_carts" (
     "id" TEXT NOT NULL,
-    "customerId" TEXT NOT NULL,
+    "customer_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -84,8 +84,8 @@ CREATE TABLE "shop_carts" (
 -- CreateTable
 CREATE TABLE "items_in_cart" (
     "id" TEXT NOT NULL,
-    "shopCartId" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
+    "shop_cart_id" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE "items_in_cart" (
 -- CreateTable
 CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
-    "customerId" TEXT NOT NULL,
+    "customer_id" TEXT NOT NULL,
     "total" DECIMAL(65,30) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -107,8 +107,8 @@ CREATE TABLE "orders" (
 -- CreateTable
 CREATE TABLE "items_ordered" (
     "id" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
-    "orderId" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
+    "order_id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 0,
     "sell_price" DECIMAL(65,30) NOT NULL,
     "sub_total" DECIMAL(65,30) NOT NULL,
@@ -139,7 +139,10 @@ CREATE UNIQUE INDEX "managers_userId_key" ON "managers"("userId");
 CREATE UNIQUE INDEX "customers_userId_key" ON "customers"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "shop_carts_customerId_key" ON "shop_carts"("customerId");
+CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "shop_carts_customer_id_key" ON "shop_carts"("customer_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "likes_customer_id_product_id_key" ON "likes"("customer_id", "product_id");
@@ -157,22 +160,22 @@ ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("
 ALTER TABLE "tokens" ADD CONSTRAINT "tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "shop_carts" ADD CONSTRAINT "shop_carts_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "shop_carts" ADD CONSTRAINT "shop_carts_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "items_in_cart" ADD CONSTRAINT "items_in_cart_shopCartId_fkey" FOREIGN KEY ("shopCartId") REFERENCES "shop_carts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "items_in_cart" ADD CONSTRAINT "items_in_cart_shop_cart_id_fkey" FOREIGN KEY ("shop_cart_id") REFERENCES "shop_carts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "items_in_cart" ADD CONSTRAINT "items_in_cart_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "items_in_cart" ADD CONSTRAINT "items_in_cart_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "items_ordered" ADD CONSTRAINT "items_ordered_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "items_ordered" ADD CONSTRAINT "items_ordered_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "items_ordered" ADD CONSTRAINT "items_ordered_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "items_ordered" ADD CONSTRAINT "items_ordered_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "likes" ADD CONSTRAINT "likes_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
