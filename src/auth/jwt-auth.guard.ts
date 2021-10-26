@@ -1,10 +1,12 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
 import { TokensService } from 'src/tokens/tokens.service';
+import { JWTPayload } from './dto/jwt.payload.dto';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -26,16 +28,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<Request>();
-    const authHeader = request.header('Authorization');
-    const token = async () => {
-      await this.tokensService.findOne(authHeader);
-    };
-
-    if (token) {
-      return true;
-    }
-
-    return false;
+    return super.canActivate(context);
   }
 }

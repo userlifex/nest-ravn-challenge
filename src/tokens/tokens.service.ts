@@ -1,21 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JWTPayload } from 'src/auth/dto/jwt.payload.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTokenDto } from './dto/create.token.dto';
-import { TokenDto } from './dto/toke.dto';
+import { TokenDto } from './dto/token.dto';
 
 @Injectable()
 export class TokensService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(token, payload): Promise<CreateTokenDto> {
+  async create(token: string, payload: JWTPayload): Promise<void> {
     const date = new Date();
     date.setHours(date.getHours() + 2);
-    return await this.prismaService.token.create({
-      select: {
-        token: true,
-        expirationDate: true,
-        userId: true,
-      },
+    await this.prismaService.token.create({
       data: {
         token,
         userId: payload.sub,
@@ -30,12 +25,6 @@ export class TokensService {
     }
     const tokenHeader = authHeader.split('Bearer ')[1].trim();
     const token = this.prismaService.token.findFirst({
-      select: {
-        id: true,
-        token: true,
-        expirationDate: true,
-        userId: true,
-      },
       where: {
         token: tokenHeader,
       },
