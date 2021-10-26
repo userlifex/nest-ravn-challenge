@@ -14,8 +14,10 @@ model User {
   id              String @id() @default(uuid())
   name            String @db.VarChar(50)
   email           String @unique
-  hash            String 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  password        String
+  roles           Roles @default(customer)
+  
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   verifiedAt      DateTime?
@@ -56,7 +58,7 @@ model Customer {
 
 model Category {
   id              String @id() @default(uuid())
-  name            String
+  name            String @unique
 
   createdAt  	  DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
@@ -89,7 +91,6 @@ model Token {
   id              String @id() @default(uuid())
   userId          String @map("user_id")
   token           String
-  type            TypeToken
   expirationDate  DateTime @map("expiration_date")
 
   createdAt  	  DateTime @default(now()) @map("created_at")
@@ -100,15 +101,9 @@ model Token {
   @@map("tokens")
 }
 
-enum TypeToken {
-  access
-  validate
-}
-
-
 model ShopCart {
   id              String @id() @default(uuid())
-  customerId      String
+  customerId      String @map("customer_id")
 
   createdAt  	  DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
@@ -122,8 +117,8 @@ model ShopCart {
 
 model ItemsInCart {
   id              String @id() @default(uuid())
-  shopCartId      String
-  productId       String
+  shopCartId      String @map("shop_cart_id")
+  productId       String @map("product_id")
   quantity        Int @default(0)
 
   createdAt  	  DateTime @default(now()) @map("created_at")
@@ -137,7 +132,7 @@ model ItemsInCart {
 
 model Order {
   id              String @id() @default(uuid())
-  customerId      String 
+  customerId      String @map("customer_id")
   total  	  Decimal
 
   createdAt  	  DateTime @default(now()) @map("created_at")
@@ -152,8 +147,8 @@ model Order {
 
 model ItemOrdered {
   id              String @id() @default(uuid())
-  productId       String
-  orderId 	  String
+  productId       String @map("product_id")
+  orderId 	  String @map("order_id")
   quantity        Int @default(0)
   sellPrice       Decimal @map("sell_price") 
   subTotal 	  Decimal @map("sub_total")
@@ -181,4 +176,9 @@ model Like {
   @@unique([customerId, productId], name: "product_customer_like")
 
   @@map("likes")
+}
+
+enum Roles {
+  customer
+  moderator
 }
