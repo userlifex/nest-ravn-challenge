@@ -10,6 +10,7 @@ import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ItemsInCartModule,
     ItemsOrderedModule,
     PrismaModule,
+    TokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],
