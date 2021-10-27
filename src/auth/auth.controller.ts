@@ -1,7 +1,5 @@
-import { Roles } from '.prisma/client';
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
-import { Role } from 'src/common/decorators/role.decorator';
 import { UserExist } from 'src/common/guards/user.exist.guard';
 import { AuthService } from './auth.service';
 import { SignUpData } from './dto/signup.dto';

@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JWTPayload } from 'src/auth/dto/jwt.payload.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { TokenDto } from './dto/token.dto';
 
 @Injectable()
 export class TokensService {
@@ -19,7 +18,7 @@ export class TokensService {
     });
   }
 
-  async findOne(authHeader): Promise<TokenDto> {
+  async findOne(authHeader) {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Invalid user credentials');
     }
@@ -29,7 +28,5 @@ export class TokensService {
         token: tokenHeader,
       },
     });
-
-    return token;
   }
 }

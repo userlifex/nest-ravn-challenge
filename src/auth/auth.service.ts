@@ -1,11 +1,11 @@
+import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { TokenDto } from 'src/tokens/dto/token.dto';
+import { TokensService } from 'src/tokens/tokens.service';
 import { UsersService } from 'src/users/users.service';
 import { SignUpData } from './dto/signup.dto';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { User } from '.prisma/client';
-import { TokensService } from 'src/tokens/tokens.service';
-import { CreateTokenDto } from 'src/tokens/dto/create.token.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +27,7 @@ export class AuthService {
     return user;
   }
 
-  async signup(signUpData: SignUpData) {
+  async signup(signUpData: SignUpData): Promise<User> {
     const hashedPassword = await this.hashPassword(signUpData.password);
 
     const createdUser = await this.usersService.create({
@@ -36,10 +36,10 @@ export class AuthService {
     });
     createdUser.password = undefined;
 
-    return { user: createdUser };
+    return createdUser;
   }
 
-  async login(user: User) {
+  async login(user: User): Promise<TokenDto> {
     const payload = { sub: user.id };
     const token = await this.generateToken(payload);
     return { access_token: token };

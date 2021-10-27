@@ -19,48 +19,21 @@ model User {
   
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
-
   verifiedAt      DateTime?
-  tokens          Token[]
-  manager         Manager?
-  customer        Customer?
-
-  @@map("users")
-}
-
-model Manager {
-  id              String @id() @default(uuid())
-  userId          String
-
-  createdAt  	  DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-
-  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@map("managers")
-}
-
-model Customer {
-  id              String @id() @default(uuid())
-  userId          String
-
-  createdAt  	  DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-
-  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   shopCart        ShopCart?
+  tokens          Token[]
   orders          Order[]
-  likes 	  Like[]
+  likes 	        Like[]
 
-  @@map("customers")
+  @@map("users")
 }
 
 model Category {
   id              String @id() @default(uuid())
   name            String @unique
 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   products Product[]
@@ -70,7 +43,7 @@ model Category {
 
 model Product {
   id              String @id() @default(uuid())
-  categoryId	  String? @map("category_id")
+  categoryId	    String? @map("category_id")
   name            String
   price           Decimal
   stock           Int
@@ -78,10 +51,10 @@ model Product {
   imageUrl        String? @map("image_url")
   numLikes        Int @map("num_likes") @default(0)
 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  category 	  Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  category 	      Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   likes           Like[]
   itemsInCart     ItemsInCart[]
@@ -96,7 +69,7 @@ model Token {
   token           String
   expirationDate  DateTime @map("expiration_date")
 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -106,12 +79,12 @@ model Token {
 
 model ShopCart {
   id              String @id() @default(uuid())
-  customerId      String @map("customer_id")
+  userId          String @map("user_id")
 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  customer        Customer @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   itemsInCart     ItemsInCart[]
 
@@ -124,7 +97,7 @@ model ItemsInCart {
   productId       String @map("product_id")
   quantity        Int @default(0)
 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   shopCart        ShopCart @relation(fields: [shopCartId], references: [id], onDelete: SetNull)
@@ -135,13 +108,13 @@ model ItemsInCart {
 
 model Order {
   id              String @id() @default(uuid())
-  customerId      String @map("customer_id")
-  total  	  Decimal
+  userId          String @map("user_id")
+  total  	        Decimal
 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  customer        Customer @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   itemsOrdered ItemOrdered[]
 
@@ -151,32 +124,33 @@ model Order {
 model ItemOrdered {
   id              String @id() @default(uuid())
   productId       String @map("product_id")
-  orderId 	  String @map("order_id")
+  orderId 	      String @map("order_id")
   quantity        Int @default(0)
   sellPrice       Decimal @map("sell_price") 
-  subTotal 	  Decimal @map("sub_total")
+  subTotal 	      Decimal @map("sub_total")
 
-  createdAt  	  DateTime @default(now()) @map("created_at")
+  createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   product         Product @relation(fields: [productId], references: [id], onDelete: SetNull)
-  order 	  Order @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  order 	        Order @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
   @@map("items_ordered")
 }
 
 
 model Like {
-  id        	  String   @id @default(uuid())
-  customerId      String   @map("customer_id")
-  productId 	  String  @map("product_id")
+  id        	    String   @id @default(uuid())
+  userId          String   @map("user_id")
+  productId 	    String  @map("product_id")
 
-  createdAt 	  DateTime @default(now()) @map("created_at")
+  createdAt 	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  customer        Customer  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  user            User  @relation(fields: [userId], references: [id], onDelete: SetNull)
   product         Product  @relation(fields: [productId], references: [id], onDelete: SetNull)
 
-  @@unique([customerId, productId], name: "product_customer_like")
+  @@unique([userId, productId], name: "product_user_like")
 
   @@map("likes")
 }
