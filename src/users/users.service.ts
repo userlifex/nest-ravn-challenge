@@ -25,8 +25,6 @@ export class UsersService {
   }
 
   async getMyProfile(user: JWTPayload) {
-    console.log(user);
-
     const { sub } = user;
     return await this.prismaService.user.findUnique({
       where: {

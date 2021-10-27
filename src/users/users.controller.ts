@@ -3,7 +3,7 @@ import { Controller, Get, Param, Request } from '@nestjs/common';
 import { Role } from 'src/common/decorators/role.decorator';
 import { UsersService } from './users.service';
 
-@Controller('users')
+@Controller('')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

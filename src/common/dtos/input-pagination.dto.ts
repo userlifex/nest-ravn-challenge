@@ -4,6 +4,10 @@ import { IBaseDto } from 'src/interfaces/base-dto.interface';
 export class InputPaginationDto implements IBaseDto {
   @IsOptional()
   @IsInt()
+  readonly userId?: string;
+
+  @IsOptional()
+  @IsInt()
   readonly page: number;
 
   @IsOptional()
