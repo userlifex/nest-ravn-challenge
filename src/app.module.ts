@@ -11,12 +11,41 @@ import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TokensModule } from './tokens/tokens.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, RouterModule, Routes } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './common/guards/role.guard';
+import { ShopcartsModule } from './shopcarts/shopcarts.module';
+
+const route: Routes = [
+  {
+    path: '/users',
+    module: UsersModule,
+    children: [
+      {
+        path: '/me/shopcart',
+        module: ShopcartsModule,
+      },
+      {
+        path: '/me/shopcart/items-in-cart',
+        module: ItemsInCartModule,
+      },
+    ],
+  },
+  // {
+  //   path: '/products',
+  //   module: ProductsModule,
+  //   children: [
+  //     {
+  //       path: '/:productId/items-in-cart',
+  //       module: ItemsInCartModule,
+  //     },
+  //   ],
+  // },
+];
 
 @Module({
   imports: [
+    RouterModule.register(route),
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     ProductsModule,
@@ -27,6 +56,7 @@ import { RolesGuard } from './common/guards/role.guard';
     ItemsOrderedModule,
     PrismaModule,
     TokensModule,
+    ShopcartsModule,
   ],
   controllers: [AppController],
   providers: [
