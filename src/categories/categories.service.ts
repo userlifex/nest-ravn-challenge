@@ -4,8 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Category } from '@prisma/client';
+import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { ICrud } from 'src/interfaces/crud.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { paginateParams, paginationSerializer } from 'src/utils';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -32,8 +34,25 @@ export class CategoriesService implements ICrud<Category> {
     });
   }
 
-  async find(): Promise<Category[]> {
-    return this.prismaService.category.findMany({});
+  async find({ page, perPage }: InputPaginationDto) {
+    const prismaPagination = paginateParams({ page, perPage });
+
+    const total = await this.prismaService.category.count({});
+
+    const pageInfo = paginationSerializer(total, { page, perPage });
+
+    if (!pageInfo.prevPage && !pageInfo.nextPage) {
+      throw new BadRequestException();
+    }
+
+    const data = await this.prismaService.category.findMany({
+      ...prismaPagination,
+    });
+
+    return {
+      pageInfo,
+      data,
+    };
   }
 
   async findOneById(id: string): Promise<Category> {

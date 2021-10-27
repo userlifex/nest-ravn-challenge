@@ -1,7 +1,8 @@
+import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { IBaseDto } from './base-dto.interface';
 
 export interface ICrud<T> {
-  find(): Promise<T[] | IBaseDto[]>;
+  find(pagination: InputPaginationDto);
 
   findOneById(id: string): Promise<T>;
 
