@@ -12,7 +12,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
-export class CategoriesService implements ICrud<Category> {
+export class CategoriesService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(input: CreateCategoryDto): Promise<Category> {
@@ -40,10 +40,6 @@ export class CategoriesService implements ICrud<Category> {
     const total = await this.prismaService.category.count({});
 
     const pageInfo = paginationSerializer(total, { page, perPage });
-
-    if (!pageInfo.prevPage && !pageInfo.nextPage) {
-      throw new BadRequestException();
-    }
 
     const data = await this.prismaService.category.findMany({
       ...prismaPagination,

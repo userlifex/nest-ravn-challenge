@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { CategoriesService } from 'src/categories/categories.service';
+import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { ICrud } from 'src/interfaces/crud.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { paginateParams, paginationSerializer } from 'src/utils';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductInfoDto } from './dto/product-info.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -26,24 +28,31 @@ export class ProductsService implements ICrud<Product> {
     });
   }
 
-  async find(): Promise<ProductInfoDto[]> {
-    return this.prismaService.product.findMany({
+  async find({ page, perPage }: InputPaginationDto) {
+    const prismaPagination = paginateParams({ page, perPage });
+
+    const total = await this.prismaService.product.count({});
+
+    const pageInfo = paginationSerializer(total, { page, perPage });
+
+    const data = await this.prismaService.product.findMany({
+      ...prismaPagination,
       select: {
         id: true,
         name: true,
         price: true,
         stock: true,
         numLikes: true,
+        category: true,
         createdAt: true,
         updatedAt: true,
-        category: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
     });
+
+    return {
+      pageInfo,
+      data,
+    };
   }
 
   async findOneById(id: string): Promise<Product> {
@@ -88,9 +97,37 @@ export class ProductsService implements ICrud<Product> {
     return product;
   }
 
-  async findManyByCategory(categoryId: string): Promise<Product[]> {
+  async findManyByCategory(
+    categoryId: string,
+    { page, perPage }: InputPaginationDto,
+  ) {
     await this.categoriesService.findOneById(categoryId);
 
-    return this.prismaService.product.findMany({ where: { categoryId } });
+    const prismaPagination = paginateParams({ page, perPage });
+
+    const total = await this.prismaService.product.count({
+      where: { categoryId },
+    });
+
+    const pageInfo = paginationSerializer(total, { page, perPage });
+
+    const data = await this.prismaService.product.findMany({
+      ...prismaPagination,
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        stock: true,
+        numLikes: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      where: { categoryId },
+    });
+
+    return {
+      pageInfo,
+      data,
+    };
   }
 }
