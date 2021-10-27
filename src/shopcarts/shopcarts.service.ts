@@ -4,7 +4,6 @@ import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { IBaseDto } from 'src/interfaces/base-dto.interface';
 import { ICrud } from 'src/interfaces/crud.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ShopcartsService implements ICrud<ShopCart> {
