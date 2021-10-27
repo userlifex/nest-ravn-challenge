@@ -47,14 +47,21 @@ export class ItemsInCartService {
     };
   }
 
-  findOneById(id: string): Promise<ItemsInCart> {
-    throw new Error('Method not implemented.');
+  async findOneById(id: string): Promise<ItemsInCart> {
+    return await this.prismaService.itemsInCart.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
   async create(input): Promise<ItemsInCart> {
     const shopCart = await this.shopCartService.findOneByUserId(input.userId);
-    return await this.prismaService.itemsInCart.create({
-      data: {
+    return await this.prismaService.itemsInCart.upsert({
+      where: {
+        id: 'asd',
+      },
+      create: {
         shopCart: {
           connect: {
             id: shopCart.id,
@@ -67,16 +74,31 @@ export class ItemsInCartService {
         },
         quantity: input.quantity,
       },
+      update: {
+        quantity: input.quantity,
+      },
       include: {
         product: true,
       },
     });
   }
 
-  update(id: string, input: IBaseDto): Promise<ItemsInCart> {
-    throw new Error('Method not implemented.');
+  async update(id: string, input: IBaseDto): Promise<ItemsInCart> {
+    return await this.prismaService.itemsInCart.update({
+      where: {
+        id,
+      },
+      data: {
+        quantity: input,
+      },
+    });
   }
-  delete(id: string): Promise<ItemsInCart> {
-    throw new Error('Method not implemented.');
+
+  async delete(id: string): Promise<ItemsInCart> {
+    return await this.prismaService.itemsInCart.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
