@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { InfoPaginationDto } from 'src/common/dtos/info-pagination.dto';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { PrismaPaginationDto } from 'src/common/dtos/prisma-pagination.dto';
@@ -7,6 +8,10 @@ export const paginateParams = ({
   perPage,
 }: InputPaginationDto): PrismaPaginationDto => {
   const nPage = page ?? 1;
+  if (nPage <= 0) {
+    throw new BadRequestException();
+  }
+
   const nPerPage = perPage ?? 10;
   const take: number = nPerPage;
   const skip: number = (nPage - 1) * nPerPage;
