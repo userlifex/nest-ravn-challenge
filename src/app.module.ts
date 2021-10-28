@@ -15,6 +15,7 @@ import { ProductsModule } from './products/products.module';
 import { ShopcartsModule } from './shopcarts/shopcarts.module';
 import { TokensModule } from './tokens/tokens.module';
 import { UsersModule } from './users/users.module';
+import { AttachmentModule } from './attachment/attachment.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UsersModule } from './users/users.module';
     PrismaModule,
     TokensModule,
     ShopcartsModule,
+    AttachmentModule,
   ],
   controllers: [AppController],
   providers: [

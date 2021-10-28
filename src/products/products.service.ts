@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
+import { AttachmentService } from 'src/attachment/services/attachment.service';
 import { CategoriesService } from 'src/categories/categories.service';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { ICrud } from 'src/interfaces/crud.interface';
@@ -14,7 +15,56 @@ export class ProductsService implements ICrud<Product> {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly categoriesService: CategoriesService,
+    private readonly attachmentService: AttachmentService,
   ) {}
+
+  async addFile(productId: string, imageBuffer: Buffer, filename: string) {
+    const image = await this.attachmentService.uploadFile(
+      imageBuffer,
+      filename,
+    );
+
+    const product = await this.findOneById(productId);
+    await this.prismaService.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        attachment: {
+          connect: {
+            id: image.id,
+          },
+        },
+      },
+    });
+
+    return image;
+  }
+
+  async getPrivateFile(id: string) {
+    const productWithImage = await this.prismaService.product.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        attachment: true,
+      },
+    });
+
+    console.log(productWithImage);
+
+    if (productWithImage) {
+      const url = await this.attachmentService.generatePresignedUrl(
+        productWithImage.attachment.key,
+      );
+      return {
+        ...productWithImage.attachment,
+        url,
+      };
+    }
+
+    throw new NotFoundException('User with this id does not exist');
+  }
 
   async create(input: CreateProductDto): Promise<Product> {
     if (input?.categoryId) {

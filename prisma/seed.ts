@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/services/auth.service';
 import { Category, PrismaClient } from '@prisma/client';
 import { CreateCategoryDto } from 'src/categories/dto/create-category.dto';
 
