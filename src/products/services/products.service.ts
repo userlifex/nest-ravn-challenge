@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { AttachmentService } from 'src/attachment/services/attachment.service';
-import { CategoriesService } from 'src/categories/categories.service';
+import { CategoriesService } from 'src/categories/services/categories.service';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { ICrud } from 'src/interfaces/crud.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
-import { CreateProductDto } from './dto/create-product.dto';
-import { ProductInfoDto } from './dto/product-info.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { ProductInfoDto } from '../dto/product-info.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
 
 @Injectable()
 export class ProductsService implements ICrud<Product> {

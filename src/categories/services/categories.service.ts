@@ -8,8 +8,8 @@ import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { ICrud } from 'src/interfaces/crud.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateCategoryDto } from '../dto/create-category.dto';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
