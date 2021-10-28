@@ -16,6 +16,7 @@ import { ShopcartsModule } from './shopcarts/shopcarts.module';
 import { TokensModule } from './tokens/tokens.module';
 import { UsersModule } from './users/users.module';
 import { AttachmentModule } from './attachment/attachment.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AttachmentModule } from './attachment/attachment.module';
     TokensModule,
     ShopcartsModule,
     AttachmentModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [
