@@ -1,3 +1,4 @@
+import { Roles } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -11,20 +12,24 @@ import {
   Query,
   Request,
 } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { Role } from 'src/common/decorators/role.decorator';
+import { UserEntity } from 'src/common/types';
 import { ItemsInCartService } from './items-in-cart.service';
 
-@Controller('users/me/shopcart/items-in-cart')
+@Controller()
 export class ItemsInCartController {
   constructor(private readonly itemsInCartService: ItemsInCartService) {}
 
-  @Post()
+  @Role(Roles.customer)
+  @Post('products/:productId/items-in-cart')
   async create(
-    @Request() req,
+    @CurrentUser() user: UserEntity,
     @Body('quantity') quantity: number,
     @Param('productId') productId: string,
   ) {
     return this.itemsInCartService.create({
-      userId: req.user.sub,
+      userId: user.id,
       quantity: quantity,
       productId: productId,
     });

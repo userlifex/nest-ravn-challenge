@@ -103,6 +103,7 @@ model ItemsInCart {
   shopCart        ShopCart @relation(fields: [shopCartId], references: [id], onDelete: SetNull)
   product         Product @relation(fields: [productId], references: [id], onDelete: SetNull)
 
+  @@unique([shopCartId, productId], name: "shopcart_product_item")  
   @@map("items_in_cart")
 }
 
@@ -115,7 +116,7 @@ model Order {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
-
+  
   itemsOrdered ItemOrdered[]
 
   @@map("orders")

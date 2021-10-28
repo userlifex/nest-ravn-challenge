@@ -1,11 +1,9 @@
-import { ItemsInCart, ShopCart } from '.prisma/client';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { JWTPayload } from 'src/auth/dto/jwt.payload.dto';
+import { ItemsInCart } from '.prisma/client';
+import { Injectable } from '@nestjs/common';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { IBaseDto } from 'src/interfaces/base-dto.interface';
-import { ICrud } from 'src/interfaces/crud.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ShopcartsService } from 'src/shopcarts/shopcarts.service';
+import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
 
 @Injectable()
@@ -57,9 +55,24 @@ export class ItemsInCartService {
 
   async create(input): Promise<ItemsInCart> {
     const shopCart = await this.shopCartService.findOneByUserId(input.userId);
-    return await this.prismaService.itemsInCart.upsert({
+
+    const updateStock = await this.prismaService.product.update({
       where: {
-        id: 'asd',
+        id: input.productId,
+      },
+      data: {
+        stock: {
+          decrement: input.quantity,
+        },
+      },
+    });
+
+    const cartItem = await this.prismaService.itemsInCart.upsert({
+      where: {
+        shopcart_product_item: {
+          shopCartId: shopCart.id,
+          productId: input.productId,
+        },
       },
       create: {
         shopCart: {
@@ -75,12 +88,18 @@ export class ItemsInCartService {
         quantity: input.quantity,
       },
       update: {
-        quantity: input.quantity,
+        quantity: {
+          increment: input.quantity,
+        },
       },
       include: {
         product: true,
       },
     });
+
+    Promise.all([cartItem, updateStock]);
+
+    return cartItem;
   }
 
   async update(id: string, input: IBaseDto): Promise<ItemsInCart> {
