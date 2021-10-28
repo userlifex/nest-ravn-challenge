@@ -15,9 +15,9 @@ import {
 import { Roles } from '@prisma/client';
 import { Public } from 'src/common/decorators/public.decorator';
 import { Role } from 'src/common/decorators/role.decorator';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductsService } from './products.service';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
+import { ProductsService } from '../services/products.service';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 
