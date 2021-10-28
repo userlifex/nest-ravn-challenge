@@ -11,7 +11,7 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { Role } from 'src/common/decorators/role.decorator';
 import { UserEntity } from 'src/common/types';
-import { OrdersService } from './orders.service';
+import { OrdersService } from '../services/orders.service';
 
 @Controller('')
 export class OrdersController {
