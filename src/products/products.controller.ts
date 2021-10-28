@@ -9,6 +9,8 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from '@prisma/client';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -16,10 +18,28 @@ import { Role } from 'src/common/decorators/role.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('')
+@Controller()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
+
+  @Post('products/:productId/image')
+  @UseInterceptors(FileInterceptor('file'))
+  async addFile(
+    @Param('productId') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log('hit');
+
+    return this.productsService.addFile(id, file.buffer, file.originalname);
+  }
+
+  @Get('products/:productId/image')
+  async getPrivateFile(@Param('productId') id: string) {
+    return this.productsService.getPrivateFile(id);
+  }
 
   @Public()
   @Get('products')

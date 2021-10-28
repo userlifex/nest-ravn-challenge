@@ -10,7 +10,7 @@ export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findOneByEmail(email: string): Promise<User> {
-    return this.prismaService.user.findUnique({
+    return await this.prismaService.user.findFirst({
       where: {
         email,
       },

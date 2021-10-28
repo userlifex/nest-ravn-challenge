@@ -1,10 +1,10 @@
 import { ItemsInCart } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
+import { CreateItemInCartDto } from './dto/create.item.in.cart.dto';
 
 @Injectable()
 export class ItemsInCartService {
@@ -13,7 +13,7 @@ export class ItemsInCartService {
     private readonly shopCartService: ShopcartsService,
   ) {}
 
-  async find({ userId, page, perPage }: InputPaginationDto) {
+  async find(userId: string, { page, perPage }: InputPaginationDto) {
     console.log(page, perPage);
 
     const prismaPagination = paginateParams({ page, perPage });
@@ -27,10 +27,6 @@ export class ItemsInCartService {
     });
 
     const pageInfo = paginationSerializer(total, { page, perPage });
-
-    // if (!pageInfo.prevPage && !pageInfo.nextPage) {
-    //   throw new BadRequestException();
-    // }
 
     const data = await this.prismaService.itemsInCart.findMany({
       ...prismaPagination,
@@ -53,7 +49,7 @@ export class ItemsInCartService {
     });
   }
 
-  async create(input): Promise<ItemsInCart> {
+  async create(input: CreateItemInCartDto): Promise<ItemsInCart> {
     const shopCart = await this.shopCartService.findOneByUserId(input.userId);
 
     const updateStock = await this.prismaService.product.update({
@@ -102,13 +98,13 @@ export class ItemsInCartService {
     return cartItem;
   }
 
-  async update(id: string, input: IBaseDto): Promise<ItemsInCart> {
+  async update(id: string, quantity: number): Promise<ItemsInCart> {
     return await this.prismaService.itemsInCart.update({
       where: {
         id,
       },
       data: {
-        quantity: input,
+        quantity,
       },
     });
   }

@@ -46,11 +46,11 @@ model Product {
   id              String @id() @default(uuid())
   categoryId	  String? @map("category_id")
   lastLikeUserId  String? @map("last_like_user_id")
+  attachmentId    String? @map("attachment_id")
   name            String
   price           Decimal
   stock           Int
   description     String?
-  imageUrl        String? @map("image_url")
   numLikes        Int @map("num_likes") @default(0)
 
   createdAt  	  DateTime @default(now()) @map("created_at")
@@ -58,6 +58,8 @@ model Product {
 
   category 	  Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   lastLike        User? @relation(fields: [lastLikeUserId], references: [id], onDelete: SetNull)
+
+  attachment      Attachment? @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
 
   likes           Like[]
   itemsInCart     ItemsInCart[]
@@ -157,6 +159,14 @@ model Like {
   @@unique([userId, productId], name: "product_user_like")
 
   @@map("likes")
+}
+
+model Attachment {
+  id             String @id @default(uuid())
+  url            String
+  key            String
+
+  product        Product?
 }
 
 enum Roles {

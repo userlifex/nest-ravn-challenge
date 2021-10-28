@@ -1,3 +1,4 @@
+import { Attachment } from '.prisma/client';
 import {
   IsDecimal,
   IsInt,
