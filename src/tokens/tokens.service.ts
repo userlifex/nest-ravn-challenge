@@ -18,17 +18,17 @@ export class TokensService {
     });
   }
 
-  async findOne(authHeader) {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Invalid user credentials');
-    }
-    const tokenHeader = authHeader.split('Bearer ')[1].trim();
-    const token = this.prismaService.token.findFirst({
-      where: {
-        token: tokenHeader,
-      },
-    });
-  }
+  // async findOne(authHeader) {
+  //   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  //     throw new UnauthorizedException('Invalid user credentials');
+  //   }
+  //   const tokenHeader = authHeader.split('Bearer ')[1].trim();
+  //   const token = this.prismaService.token.findFirst({
+  //     where: {
+  //       token: tokenHeader,
+  //     },
+  //   });
+  // }
 
   async findUserId(token: string) {
     const user = await this.prismaService.token.findFirst({
