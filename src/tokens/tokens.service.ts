@@ -29,4 +29,17 @@ export class TokensService {
       },
     });
   }
+
+  async findUserId(token: string) {
+    const user = await this.prismaService.token.findFirst({
+      where: {
+        token: token,
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    return user;
+  }
 }

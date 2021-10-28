@@ -54,7 +54,7 @@ export class AuthService {
     await this.sengridService.createEmail({
       to: user.email,
       subject: `Password Recover`,
-      message: `Hello ${user.name} use patch to this url to change you password with your new password`,
+      message: `Hello \n use this patch to this url to change you password with your new password`,
       link: `http://${process.env.HOST}${
         process.env.PORT ? `:${process.env.PORT}` : ''
       }/users/passwords/${token}`,
@@ -62,6 +62,17 @@ export class AuthService {
     });
 
     return token;
+  }
+
+  async changePassword(token: string, password: string) {
+    const user = await this.tokenService.findUserId(token);
+    const hashedPassword = await this.hashPassword(password);
+
+    const updated = await this.usersService.update(user.userId, {
+      password: hashedPassword,
+    });
+
+    return updated;
   }
 
   private async generateToken(payload): Promise<string> {

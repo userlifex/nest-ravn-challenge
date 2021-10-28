@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
 import { UserExist } from 'src/common/guards/user.exist.guard';
 import { SignUpData } from '../dto/request/signup.dto';
@@ -28,5 +36,14 @@ export class AuthController {
   @Post('password-recover')
   async PasswordRecover(@Body('email') email: string) {
     return this.authService.passwordRecover(email);
+  }
+
+  @Public()
+  @Patch('/:token/change-password')
+  async ChangePassword(
+    @Param('token') token: string,
+    @Body('password') password: string,
+  ) {
+    return this.authService.changePassword(token, password);
   }
 }
