@@ -17,7 +17,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
-@Controller('')
+@Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -30,8 +30,8 @@ export class ProductsController {
     return this.productsService.find({ page, perPage });
   }
 
-  @Post('products')
   @Role(Roles.moderator)
+  @Post('products')
   async create(@Body() body: CreateProductDto) {
     return this.productsService.create(body);
   }

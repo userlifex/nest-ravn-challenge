@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JWTPayload } from 'src/auth/dto/jwt.payload.dto';
+import { JWTPayload } from 'src/auth/dto/response/jwt.payload.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()

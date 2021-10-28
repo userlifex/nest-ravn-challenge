@@ -1,8 +1,9 @@
 import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
-import { JWTPayload } from 'src/auth/dto/jwt.payload.dto';
+import { plainToClass } from 'class-transformer';
+import { UserDto } from 'src/auth/dto/response/user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from './dto/create.user.dto';
+import { CreateUserDto } from '../dto/create.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,19 +17,28 @@ export class UsersService {
     });
   }
 
-  async findOneById(id: string) {
-    return this.prismaService.user.findUnique({
+  async findOneById(id: string): Promise<User> {
+    return await this.prismaService.user.findUnique({
       where: {
         id,
       },
     });
   }
 
-  async getMyProfile(user: JWTPayload) {
-    const { sub } = user;
+  async findOne(id: string): Promise<UserDto> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return plainToClass(UserDto, user);
+  }
+
+  async getMyProfile(id: string): Promise<User> {
     return await this.prismaService.user.findUnique({
       where: {
-        id: sub,
+        id,
       },
       include: {
         shopCart: true,
