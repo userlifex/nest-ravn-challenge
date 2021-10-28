@@ -120,4 +120,12 @@ export class ItemsInCartService {
       },
     });
   }
+
+  async deleteItemsByCartId(shopCartId: string) {
+    return await this.prismaService.itemsInCart.deleteMany({
+      where: {
+        shopCartId,
+      },
+    });
+  }
 }

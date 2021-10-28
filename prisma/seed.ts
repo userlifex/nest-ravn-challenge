@@ -1,5 +1,4 @@
 import * as bcrypt from 'bcrypt';
-import { AuthService } from 'src/auth/auth.service';
 import { Category, PrismaClient } from '@prisma/client';
 import { CreateCategoryDto } from 'src/categories/dto/create-category.dto';
 
@@ -12,6 +11,9 @@ async function main() {
   const prisma = new PrismaClient();
 
   const dropData = async () => {
+    await prisma.like.deleteMany({});
+    await prisma.itemsInCart.deleteMany({});
+    await prisma.shopCart.deleteMany({});
     await prisma.category.deleteMany({});
     await prisma.product.deleteMany({});
     await prisma.shopCart.deleteMany({});
@@ -30,6 +32,9 @@ async function main() {
       shopCart: {
         create: {},
       },
+    },
+    include: {
+      shopCart: true,
     },
   });
 
@@ -63,6 +68,8 @@ async function main() {
     prismaCategories.push(cat);
   }
 
+  const prismaProd = [];
+
   const products = [
     {
       name: 'leche',
@@ -84,6 +91,14 @@ async function main() {
     },
   ];
 
+  await prisma.product.create({
+    data: {
+      name: 'no category',
+      stock: 0,
+      price: 12.1,
+    },
+  });
+
   products.forEach(async (item) => {
     const rand = Number.parseInt(Number(Math.random() * 3) + '');
     const categoryId = prismaCategories[rand].id;
@@ -95,15 +110,20 @@ async function main() {
         price: Math.random() * 40,
       },
     });
+
+    await prisma.itemsInCart.create({
+      data: {
+        shopCartId: customer.shopCart.id,
+        productId: prod.id,
+        quantity: 2,
+      },
+    });
   });
 
-  await prisma.product.create({
-    data: {
-      name: 'no category',
-      stock: 0,
-      price: 12.1,
-    },
-  });
+  //await prisma.itemsInCart.create({ data: {
+  //shopCartId: customer.shopCartId,
+  //productId:
+  //} })
 }
 
 main();
