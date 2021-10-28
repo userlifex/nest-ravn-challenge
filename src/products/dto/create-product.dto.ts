@@ -25,6 +25,14 @@ export class CreateProductDto implements IBaseDto {
   readonly description: string;
 
   @IsOptional()
+  @IsInt()
+  readonly numLikes: number;
+
+  @IsOptional()
+  @IsString()
+  readonly lastLikeUserId: string;
+
+  @IsOptional()
   @IsString()
   readonly imageUrl: string;
 }
