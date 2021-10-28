@@ -35,22 +35,24 @@ export class ItemsInCartController {
     });
   }
 
-  @Get()
+  @Role(Roles.customer)
+  @Get('products/:productId/items-in-cart')
   async getAll(
-    @Request() req,
+    @CurrentUser() user: UserEntity,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
   ) {
-    const userId = req.user.sub;
-    return this.itemsInCartService.find({ userId, page, perPage });
+    return this.itemsInCartService.find(user.id, { page, perPage });
   }
 
-  @Get(':id')
+  @Role(Roles.customer)
+  @Get('products/:productId/items-in-cart/:id')
   async getOneById(@Param('id') cartItemId: string) {
     return this.itemsInCartService.findOneById(cartItemId);
   }
 
-  @Patch('id')
+  @Role(Roles.customer)
+  @Patch('products/:productId/items-in-cart/:id')
   async update(
     @Param('id') cartItemId: string,
     @Body('quantity') quantity: number,
@@ -58,7 +60,8 @@ export class ItemsInCartController {
     return this.itemsInCartService.update(cartItemId, quantity);
   }
 
-  @Delete('id')
+  @Role(Roles.customer)
+  @Delete('products/:productId/items-in-cart/:id')
   async delete(@Param('id') cartItemId: string) {
     return this.itemsInCartService.delete(cartItemId);
   }

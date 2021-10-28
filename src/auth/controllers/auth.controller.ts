@@ -23,4 +23,10 @@ export class AuthController {
     console.log(req.user);
     return await this.authService.login(req.user);
   }
+
+  @Public()
+  @Post('password-recover')
+  async PasswordRecover(@Body('email') email: string) {
+    return this.authService.passwordRecover(email);
+  }
 }

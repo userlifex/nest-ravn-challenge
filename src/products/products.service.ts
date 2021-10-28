@@ -24,7 +24,6 @@ export class ProductsService implements ICrud<Product> {
       filename,
     );
 
-    const product = await this.findOneById(productId);
     await this.prismaService.product.update({
       where: {
         id: productId,
@@ -41,6 +40,16 @@ export class ProductsService implements ICrud<Product> {
     return image;
   }
 
+  async validateStock(productId: string, quantity: number) {
+    const produt = await this.findOneById(productId);
+
+    if (quantity > produt.stock) {
+      return false;
+    }
+
+    return true;
+  }
+
   async getPrivateFile(id: string) {
     const productWithImage = await this.prismaService.product.findUnique({
       where: {
@@ -50,8 +59,6 @@ export class ProductsService implements ICrud<Product> {
         attachment: true,
       },
     });
-
-    console.log(productWithImage);
 
     if (productWithImage) {
       const url = await this.attachmentService.generatePresignedUrl(

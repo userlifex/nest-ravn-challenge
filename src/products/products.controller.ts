@@ -38,7 +38,6 @@ export class ProductsController {
 
   @Get('products/:productId/image')
   async getPrivateFile(@Param('productId') id: string) {
-    console.log('hit');
     return this.productsService.getPrivateFile(id);
   }
 

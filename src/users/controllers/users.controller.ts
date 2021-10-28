@@ -1,5 +1,5 @@
 import { Roles, User } from '.prisma/client';
-import { Controller, Get, Param, Request } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Role } from 'src/common/decorators/role.decorator';
 import { UserEntity } from 'src/common/types';
