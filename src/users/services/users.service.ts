@@ -1,7 +1,7 @@
 import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { SendgridService } from 'src/common/sendgrid/sendgrid.service';
+import { SendgridService } from '../../common/sendgrid/services/sendgrid.service';
 import { PrismaService } from 'src/prisma/services/prisma.service';
 import { CreateUserDto } from '../dto/request/create.user.dto';
 import { UpdateUserDto } from '../dto/request/update.user.dto';
