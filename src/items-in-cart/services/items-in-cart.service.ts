@@ -1,4 +1,3 @@
-import { ItemsInCart } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
@@ -95,6 +94,7 @@ export class ItemsInCartService {
         data: {
           productId: input.productId,
           shopCartId: shopCart.id,
+          quantity: input.quantity,
         },
         select: {
           id: true,

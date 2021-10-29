@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  Request,
 } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Role } from 'src/common/decorators/role.decorator';
