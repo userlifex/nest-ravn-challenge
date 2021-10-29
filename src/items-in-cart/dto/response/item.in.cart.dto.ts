@@ -5,7 +5,7 @@ import { InfoPaginationDto } from 'src/common/dtos/info-pagination.dto';
 @Exclude()
 export class ItemInCartDto {
   @Expose()
-  readonly id: InfoPaginationDto;
+  readonly id: string;
 
   @Expose()
   readonly product: Product;

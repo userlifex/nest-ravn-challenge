@@ -1,8 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsString } from 'class-validator';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 
-export class InfoCategoryDto implements IBaseDto {
+export class InfoCategoryDto {
   @IsString()
   readonly id: string;
 

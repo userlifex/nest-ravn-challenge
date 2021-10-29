@@ -1,7 +1,6 @@
 import { IsInt, IsOptional } from 'class-validator';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 
-export class InputPaginationDto implements IBaseDto {
+export class InputPaginationDto {
   @IsOptional()
   @IsInt()
   readonly userId?: string;

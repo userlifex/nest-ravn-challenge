@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { plainToClass } from 'class-transformer';
-import { SengridService } from 'src/common/sengrid/sengrid.service';
+import { SendgridService } from 'src/common/sendgrid/sendgrid.service';
 import { TokenDto } from 'src/tokens/dto/token.dto';
 import { TokensService } from 'src/tokens/services/tokens.service';
 import { UsersService } from 'src/users/services/users.service';
@@ -17,7 +17,7 @@ export class AuthService {
     private readonly tokenService: TokensService,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly sengridService: SengridService,
+    private readonly sengridService: SendgridService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<User> {

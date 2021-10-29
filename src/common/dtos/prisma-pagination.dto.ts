@@ -1,7 +1,6 @@
 import { IsInt, IsOptional } from 'class-validator';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 
-export class PrismaPaginationDto implements IBaseDto {
+export class PrismaPaginationDto {
   @IsInt()
   readonly skip: number;
 

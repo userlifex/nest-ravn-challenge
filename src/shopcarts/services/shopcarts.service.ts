@@ -1,6 +1,7 @@
+import { ItemsInCart, ShopCart } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/services/prisma.service';
 import { ShopCartDto } from '../dto/response/shopcart.dto';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class ShopcartsService {
     return shopcart;
   }
 
-  async findOneByUserId(userId: string): Promise<ShopCartDto> {
+  async findOneByUserId(userId: string): Promise<ShopCart> {
     const shopcart = await this.prismaService.shopCart.findUnique({
       where: {
         userId,
@@ -42,7 +43,7 @@ export class ShopcartsService {
       rejectOnNotFound: true,
     });
 
-    return plainToClass(ShopCartDto, shopcart);
+    return shopcart;
   }
 
   async validateShopcartByUser(userId: string) {

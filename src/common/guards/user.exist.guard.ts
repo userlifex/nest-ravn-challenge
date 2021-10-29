@@ -18,7 +18,7 @@ export class UserExist implements CanActivate {
     return this.validateRequest(request);
   }
 
-  async validateRequest(request) {
+  async validateRequest(request: Request) {
     const userExist = await this.usersService.findOneByEmail(
       request.body.email,
     );

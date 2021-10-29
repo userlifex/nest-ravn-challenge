@@ -6,9 +6,8 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 
-export class CreateProductDto implements IBaseDto {
+export class CreateProductDto {
   @IsOptional()
   @IsString()
   readonly categoryId: string;

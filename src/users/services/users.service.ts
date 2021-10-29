@@ -1,8 +1,8 @@
 import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { SengridService } from 'src/common/sengrid/sengrid.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { SendgridService } from 'src/common/sendgrid/sendgrid.service';
+import { PrismaService } from 'src/prisma/services/prisma.service';
 import { CreateUserDto } from '../dto/request/create.user.dto';
 import { UpdateUserDto } from '../dto/request/update.user.dto';
 import { UserProfileDto } from '../dto/response/user.profile.dto';
@@ -11,14 +11,15 @@ import { UserProfileDto } from '../dto/response/user.profile.dto';
 export class UsersService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly sendgridService: SengridService,
+    private readonly sendgridService: SendgridService,
   ) {}
 
   async findOneByEmail(email: string): Promise<User> {
-    return await this.prismaService.user.findFirst({
+    return await this.prismaService.user.findUnique({
       where: {
         email,
       },
+      rejectOnNotFound: false,
     });
   }
 

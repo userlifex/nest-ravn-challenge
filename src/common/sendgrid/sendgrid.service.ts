@@ -3,7 +3,7 @@ import * as sgMail from '@sendgrid/mail';
 import { MessageDto } from 'src/common/dtos/message.dto';
 
 @Injectable()
-export class SengridService {
+export class SendgridService {
   constructor() {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
