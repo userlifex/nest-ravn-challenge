@@ -34,7 +34,7 @@ export class ProductsController {
     return this.productsService.find({ page, perPage });
   }
 
-  @Role(Roles.moderator)
+  @Role(Roles.customer)
   @Post('products')
   async create(@Body() body: CreateProductDto) {
     return this.productsService.create(body);

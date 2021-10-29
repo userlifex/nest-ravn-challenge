@@ -36,7 +36,7 @@ export class ItemsInCartController {
   }
 
   @Role(Roles.customer)
-  @Get('products/:productId/items-in-cart')
+  @Get('users/me/shopcart/items-in-cart')
   async getAll(
     @CurrentUser() user: UserEntity,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
@@ -46,13 +46,13 @@ export class ItemsInCartController {
   }
 
   @Role(Roles.customer)
-  @Get('products/:productId/items-in-cart/:id')
+  @Get('users/me/shopcart/items-in-cart/:id')
   async getOneById(@Param('id') cartItemId: string) {
     return this.itemsInCartService.findOneById(cartItemId);
   }
 
   @Role(Roles.customer)
-  @Patch('products/:productId/items-in-cart/:id')
+  @Patch('users/me/shopcart/items-in-cart/:id')
   async update(
     @Param('id') cartItemId: string,
     @Body('quantity') quantity: number,
@@ -61,7 +61,7 @@ export class ItemsInCartController {
   }
 
   @Role(Roles.customer)
-  @Delete('products/:productId/items-in-cart/:id')
+  @Delete('users/me/shopcart/items-in-cart/:id')
   async delete(@Param('id') cartItemId: string) {
     return this.itemsInCartService.delete(cartItemId);
   }

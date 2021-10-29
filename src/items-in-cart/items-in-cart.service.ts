@@ -1,7 +1,10 @@
 import { ItemsInCart } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import e from 'express';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ProductsService } from 'src/products/services/products.service';
 import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
 import { CreateItemInCartDto } from './dto/create.item.in.cart.dto';
@@ -11,6 +14,7 @@ export class ItemsInCartService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly shopCartService: ShopcartsService,
+    private readonly productService: ProductsService,
   ) {}
 
   async find(userId: string, { page, perPage }: InputPaginationDto) {
@@ -49,64 +53,73 @@ export class ItemsInCartService {
     });
   }
 
-  async create(input: CreateItemInCartDto): Promise<ItemsInCart> {
-    const shopCart = await this.shopCartService.findOneByUserId(input.userId);
-
-    const updateStock = await this.prismaService.product.update({
-      where: {
-        id: input.productId,
-      },
-      data: {
-        stock: {
-          decrement: input.quantity,
-        },
-      },
-    });
-
-    const cartItem = await this.prismaService.itemsInCart.upsert({
+  private async findOneByUniqueCompound(shopCartId: string, productId: string) {
+    return await this.prismaService.itemsInCart.findUnique({
       where: {
         shopcart_product_item: {
-          shopCartId: shopCart.id,
-          productId: input.productId,
+          shopCartId,
+          productId,
         },
       },
-      create: {
-        shopCart: {
-          connect: {
-            id: shopCart.id,
-          },
-        },
-        product: {
-          connect: {
-            id: input.productId,
-          },
-        },
-        quantity: input.quantity,
-      },
-      update: {
-        quantity: {
-          increment: input.quantity,
-        },
-      },
-      include: {
-        product: true,
-      },
+      rejectOnNotFound: false,
     });
-
-    Promise.all([cartItem, updateStock]);
-
-    return cartItem;
   }
 
-  async update(id: string, quantity: number): Promise<ItemsInCart> {
-    return await this.prismaService.itemsInCart.update({
-      where: {
-        id,
-      },
-      data: {
-        quantity,
-      },
-    });
+  async create(input: CreateItemInCartDto): Promise<ItemsInCart> {
+    const shopCart = await this.shopCartService.findOneByUserId(input.userId);
+    const carItem = await this.findOneByUniqueCompound(
+      shopCart.id,
+      input.productId,
+    );
+
+    if (!carItem) {
+      const newItem = await this.prismaService.itemsInCart.create({
+        data: {
+          productId: input.productId,
+          shopCartId: shopCart.id,
+        },
+      });
+      return newItem;
+    } else {
+      const itemUpdated = await this.update(carItem.id, input.quantity, true);
+      return itemUpdated;
+    }
+  }
+
+  async update(
+    id: string,
+    quantity: number,
+    fromCreate = false,
+  ): Promise<ItemsInCart> {
+    const cartItem = await this.findOneById(id);
+
+    if (fromCreate) {
+      quantity += cartItem.quantity;
+    }
+
+    const input = {
+      productId: cartItem.productId,
+      quantity,
+    };
+
+    console.log(cartItem.quantity);
+
+    const isStockAvailable = await this.verifyQuantity(id, input);
+    console.log(isStockAvailable);
+
+    if (isStockAvailable) {
+      const itemUpdated = await this.prismaService.itemsInCart.update({
+        where: {
+          id,
+        },
+        data: {
+          quantity,
+        },
+      });
+      return itemUpdated;
+    }
+
+    console.log('cantidad excede del stock');
   }
 
   async delete(id: string): Promise<ItemsInCart> {
@@ -123,5 +136,16 @@ export class ItemsInCartService {
         shopCartId,
       },
     });
+  }
+
+  private async verifyQuantity(cartItemId: string, input): Promise<boolean> {
+    const cartItem = await this.findOneById(cartItemId);
+
+    const isStockAvailable = this.productService.validateStock(
+      input.productId,
+      input.quantity,
+    );
+
+    return isStockAvailable;
   }
 }
