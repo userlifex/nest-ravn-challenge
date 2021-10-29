@@ -7,9 +7,9 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { Public } from 'src/common/decorators/public.decorator';
-import { UserExist } from 'src/common/guards/user.exist.guard';
-import { UserEntity } from 'src/common/types';
+import { Public } from '../../common/decorators/public.decorator';
+import { UserExist } from '../../common/guards/user.exist.guard';
+import { UserEntity } from '../../common/types';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { SignUpData } from '../dto/request/signup.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
