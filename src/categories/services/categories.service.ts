@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { Category } from '@prisma/client';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { PrismaService } from 'src/prisma/services/prisma.service';
-import { paginateParams, paginationSerializer } from 'src/utils';
+import { PrismaService } from '../../prisma/services/prisma.service';
+import { paginateParams, paginationSerializer } from '../../utils';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 
@@ -23,10 +23,10 @@ export class CategoriesService {
     });
 
     if (category) {
-      throw new BadRequestException('recurso ya existe');
+      throw new BadRequestException('Category already exists');
     }
 
-    return this.prismaService.category.create({
+    return await this.prismaService.category.create({
       data: {
         ...input,
       },
