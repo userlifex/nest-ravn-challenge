@@ -48,6 +48,20 @@ async function main() {
     },
   });
 
+  const customer2 = await prisma.user.create({
+    data: {
+      name: 'efrain',
+      email: 'eholguinruiz@gmail.com',
+      password: pass1,
+      shopCart: {
+        create: {},
+      },
+    },
+    include: {
+      shopCart: true,
+    },
+  });
+
   console.log(customer, moderator);
 
   const categories: CreateCategoryDto[] = [

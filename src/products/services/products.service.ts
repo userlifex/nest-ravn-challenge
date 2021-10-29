@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
 import { AttachmentService } from 'src/attachment/services/attachment.service';
 import { CategoriesService } from 'src/categories/services/categories.service';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
@@ -23,6 +24,8 @@ export class ProductsService implements ICrud<Product> {
       imageBuffer,
       filename,
     );
+
+    await this.findOneById(productId);
 
     await this.prismaService.product.update({
       where: {
@@ -50,10 +53,10 @@ export class ProductsService implements ICrud<Product> {
     return true;
   }
 
-  async getPrivateFile(id: string) {
+  async getPrivateFile(productId: string) {
     const productWithImage = await this.prismaService.product.findUnique({
       where: {
-        id,
+        id: productId,
       },
       include: {
         attachment: true,
@@ -92,24 +95,53 @@ export class ProductsService implements ICrud<Product> {
 
     const pageInfo = paginationSerializer(total, { page, perPage });
 
-    const data = await this.prismaService.product.findMany({
+    const data = [];
+
+    const products = await this.prismaService.product.findMany({
       ...prismaPagination,
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        stock: true,
-        numLikes: true,
+      include: {
+        attachment: true,
         category: true,
-        createdAt: true,
-        updatedAt: true,
       },
     });
+
+    for (const product of products) {
+      const productWithImage = await this.getProductWithImg(product);
+      data.push(productWithImage);
+    }
 
     return {
       pageInfo,
       data,
     };
+  }
+
+  async getProductWithImg(product) {
+    let imgUrl = '';
+    if (product.attachment) {
+      const attachment = await this.getPrivateFile(product.id);
+      imgUrl = attachment.url;
+    }
+
+    const { id, name, stock, price, createdAt, updatedAt, category } = product;
+
+    return {
+      id,
+      name,
+      stock,
+      price,
+      imgUrl,
+      category,
+      updatedAt,
+      createdAt,
+    };
+  }
+
+  async findOneByIdWithImg(id: string) {
+    const product = this.validateById(id);
+    const productWithImage = await this.getProductWithImg(product);
+
+    return productWithImage;
   }
 
   async findOneById(id: string): Promise<Product> {

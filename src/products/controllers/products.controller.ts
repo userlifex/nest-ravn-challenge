@@ -25,22 +25,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post('products/:productId/image')
-  @UseInterceptors(FileInterceptor('file'))
-  async addFile(
-    @Param('productId') id: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    console.log('hit');
-
-    return this.productsService.addFile(id, file.buffer, file.originalname);
-  }
-
-  @Get('products/:productId/image')
-  async getPrivateFile(@Param('productId') id: string) {
-    return this.productsService.getPrivateFile(id);
-  }
-
   @Public()
   @Get('products')
   async getAll(
@@ -59,7 +43,7 @@ export class ProductsController {
   @Public()
   @Get('products/:id')
   asyncgetOne(@Param('id') id: string) {
-    return this.productsService.findOneById(id);
+    return this.productsService.findOneByIdWithImg(id);
   }
 
   @Patch('products/:id')
@@ -72,6 +56,24 @@ export class ProductsController {
   @Role(Roles.moderator)
   async delete(@Param('id') id: string) {
     return this.productsService.delete(id);
+  }
+
+  @Post('products/:productId/image')
+  @Role(Roles.moderator)
+  @UseInterceptors(FileInterceptor('file'))
+  async addFile(
+    @Param('productId') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log('hit');
+
+    return this.productsService.addFile(id, file.buffer, file.originalname);
+  }
+
+  @Role(Roles.moderator)
+  @Get('products/:productId/image')
+  async getPrivateFile(@Param('productId') productId: string) {
+    return this.productsService.getPrivateFile(productId);
   }
 
   @Public()
