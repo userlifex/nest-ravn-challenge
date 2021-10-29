@@ -11,8 +11,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { Roles } from '@prisma/client';
-import { Public } from 'src/common/decorators/public.decorator';
-import { Role } from 'src/common/decorators/role.decorator';
+import { Public } from '../../common/decorators/public.decorator';
+import { Role } from '../../common/decorators/role.decorator';
 import { CategoriesService } from '../services/categories.service';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';

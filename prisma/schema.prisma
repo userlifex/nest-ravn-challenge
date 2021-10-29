@@ -25,7 +25,7 @@ model User {
   tokens          Token[]
   orders          Order[]
   likes 	  Like[]
-  lastLike        Product?
+  lastLike        Product[]
 
   @@map("users")
 }
@@ -56,10 +56,10 @@ model Product {
   createdAt  	  DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  category 	  Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  lastLike        User? @relation(fields: [lastLikeUserId], references: [id], onDelete: SetNull)
+  category 	  Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  lastLike        User? @relation(fields: [lastLikeUserId], references: [id], onDelete: Cascade)
 
-  attachment      Attachment? @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
+  attachment      Attachment? @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
 
   likes           Like[]
   itemsInCart     ItemsInCart[]
@@ -77,7 +77,7 @@ model Token {
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
 }
@@ -89,7 +89,7 @@ model ShopCart {
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   itemsInCart     ItemsInCart[]
 
@@ -105,8 +105,8 @@ model ItemsInCart {
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  shopCart        ShopCart @relation(fields: [shopCartId], references: [id], onDelete: SetNull)
-  product         Product @relation(fields: [productId], references: [id], onDelete: SetNull)
+  shopCart        ShopCart @relation(fields: [shopCartId], references: [id], onDelete: Cascade)
+  product         Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([shopCartId, productId], name: "shopcart_product_item")  
   @@map("items_in_cart")
@@ -120,7 +120,7 @@ model Order {
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user            User @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   itemsOrdered ItemOrdered[]
 
@@ -138,8 +138,8 @@ model ItemOrdered {
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  product         Product @relation(fields: [productId], references: [id], onDelete: SetNull)
-  order 	        Order @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  product         Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order 	        Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("items_ordered")
 }
@@ -153,8 +153,8 @@ model Like {
   createdAt 	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user            User  @relation(fields: [userId], references: [id], onDelete: SetNull)
-  product         Product  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  user            User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId], name: "product_user_like")
 

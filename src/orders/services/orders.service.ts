@@ -1,10 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/services/prisma.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
 import { UsersService } from 'src/users/services/users.service';
 import { ProductsService } from 'src/products/services/products.service';
-import { ItemsInCartService } from 'src/items-in-cart/items-in-cart.service';
+import { ItemsInCartService } from 'src/items-in-cart/services/items-in-cart.service';
 import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
 
 @Injectable()
@@ -58,35 +62,23 @@ export class OrdersService {
     };
   }
 
-  async createOrder(userId: string) {
-    const shopCart = await this.prismaService.shopCart.findUnique({
-      where: { userId },
+  async findOrderByUserId(userId: string, orderId: string) {
+    const order = await this.prismaService.order.findUnique({
+      where: { id: orderId },
       rejectOnNotFound: false,
     });
 
-    const shopCartItems = await this.prismaService.itemsInCart.findMany({
-      where: {
-        shopCartId: shopCart.id,
-      },
-      select: {
-        quantity: true,
-        product: {
-          select: {
-            id: true,
-            price: true,
-            stock: true,
-          },
-        },
-      },
-    });
-
-    if (shopCartItems.length === 0) {
-      throw new BadRequestException('there are 0 items in cart');
+    if (order.userId !== userId) {
+      throw new NotFoundException();
     }
 
+    return order;
+  }
+
+  async createOrderDetails(shopcartItems) {
     let total = 0;
     const itemsOrder = [];
-    for (const item of shopCartItems) {
+    for (const item of shopcartItems) {
       const { price, stock } = item.product;
       const { quantity } = item;
       let subTotal = 0;
@@ -97,8 +89,9 @@ export class OrdersService {
 
       const newStock = stock - quantity;
 
-      if (newStock < 3) {
-        console.log('send email');
+      if (newStock <= 3) {
+        console.log('this is a stock');
+        await this.productsService.sendEmailToLastUserLikes(item.product);
       }
 
       await this.productsService.update(item.product.id, { stock: newStock });
@@ -115,6 +108,17 @@ export class OrdersService {
       total += subTotal;
     }
 
+    return { total, itemsOrder };
+  }
+
+  async createOrder(userId: string) {
+    const shopcart = await this.shopcartsService.validateShopcartByUser(userId);
+    const shopcartItems = await this.itemsInCartService.findManyToMakeOrder(
+      shopcart.id,
+    );
+
+    const { itemsOrder, total } = await this.createOrderDetails(shopcartItems);
+
     const order = await this.prismaService.order.create({
       data: {
         total,
@@ -123,7 +127,7 @@ export class OrdersService {
       },
     });
 
-    await this.itemsInCartService.deleteItemsByCartId(shopCart.id);
+    await this.itemsInCartService.deleteItemsByCartId(shopcart.id);
 
     return order;
   }

@@ -2,7 +2,7 @@ import { Attachment } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3 } from 'aws-sdk';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../prisma/services/prisma.service';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -28,9 +28,6 @@ export class AttachmentService {
       data: {
         key: uploadResult.Key,
         url: uploadResult.Location,
-      },
-      include: {
-        product: true,
       },
     });
 

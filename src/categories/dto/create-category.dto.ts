@@ -1,7 +1,6 @@
 import { IsString } from 'class-validator';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 
-export class CreateCategoryDto implements IBaseDto {
+export class CreateCategoryDto {
   @IsString()
   readonly name: string;
 }

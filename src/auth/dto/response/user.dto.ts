@@ -7,8 +7,10 @@ export class UserDto {
   readonly id: string;
 
   @Expose()
-  readonly email: string;
+  readonly name: string;
 
   @Expose()
+  readonly email: string;
+
   readonly roles: Roles;
 }

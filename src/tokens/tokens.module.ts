@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { TokensService } from './tokens.service';
+import { TokensService } from './services/tokens.service';
 
 @Module({
   imports: [PrismaModule],
