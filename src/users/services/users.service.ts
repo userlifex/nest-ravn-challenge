@@ -1,10 +1,11 @@
 import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { UserDto } from 'src/auth/dto/response/user.dto';
 import { SengridService } from 'src/common/sengrid/sengrid.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from '../dto/create.user.dto';
+import { CreateUserDto } from '../dto/request/create.user.dto';
+import { UpdateUserDto } from '../dto/request/update.user.dto';
+import { UserProfileDto } from '../dto/response/user.profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -29,26 +30,22 @@ export class UsersService {
     });
   }
 
-  async findOne(id: string): Promise<UserDto> {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    return plainToClass(UserDto, user);
-  }
-
-  async getMyProfile(id: string): Promise<User> {
-    return await this.prismaService.user.findUnique({
+  async getMyProfile(id: string): Promise<UserProfileDto> {
+    const me = await this.prismaService.user.findUnique({
       where: {
         id,
       },
       include: {
-        shopCart: true,
+        shopCart: {
+          select: {
+            id: true,
+          },
+        },
         orders: true,
       },
     });
+
+    return plainToClass(UserProfileDto, me);
   }
 
   async create(user: CreateUserDto): Promise<User> {
@@ -65,7 +62,7 @@ export class UsersService {
     });
   }
 
-  async update(id: string, input) {
+  async update(id: string, input: UpdateUserDto): Promise<UpdateUserDto> {
     return await this.prismaService.user.update({
       where: {
         id,

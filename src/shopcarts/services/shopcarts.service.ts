@@ -1,6 +1,7 @@
-import { ShopCart } from '.prisma/client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ShopCartDto } from '../dto/response/shopcart.dto';
 
 @Injectable()
 export class ShopcartsService {
@@ -11,36 +12,37 @@ export class ShopcartsService {
       where: {
         id,
       },
-      rejectOnNotFound: false,
+      rejectOnNotFound: true,
     });
-
-    if (!shopcart) {
-      throw new NotFoundException('shopcart not found');
-    }
 
     return shopcart;
   }
 
-  async findOneByUserId(userId: string): Promise<ShopCart> {
+  async findOneByUserId(userId: string): Promise<ShopCartDto> {
     const shopcart = await this.prismaService.shopCart.findUnique({
       where: {
         userId,
       },
       include: {
         itemsInCart: {
-          include: {
-            product: true,
+          select: {
+            id: true,
+            quantity: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+                description: true,
+              },
+            },
           },
         },
       },
-      rejectOnNotFound: false,
+      rejectOnNotFound: true,
     });
 
-    if (!shopcart) {
-      throw new NotFoundException('shopcart not found');
-    }
-
-    return shopcart;
+    return plainToClass(ShopCartDto, shopcart);
   }
 
   async validateShopcartByUser(userId: string) {
@@ -49,13 +51,9 @@ export class ShopcartsService {
       select: {
         id: true,
       },
-      rejectOnNotFound: false,
+      rejectOnNotFound: true,
     });
 
-    if (!shopcart) {
-      throw new NotFoundException('shopcart not found');
-    }
-
-    return shopcart;
+    return plainToClass(ShopCartDto, shopcart);
   }
 }

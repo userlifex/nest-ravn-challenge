@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
 import { UsersService } from 'src/users/services/users.service';
 import { ProductsService } from 'src/products/services/products.service';
-import { ItemsInCartService } from 'src/items-in-cart/items-in-cart.service';
+import { ItemsInCartService } from 'src/items-in-cart/services/items-in-cart.service';
 import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
 
 @Injectable()
