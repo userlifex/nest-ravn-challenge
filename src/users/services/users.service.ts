@@ -1,6 +1,7 @@
 import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import { SengridService } from 'src/common/sengrid/sengrid.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from '../dto/request/create.user.dto';
 import { UpdateUserDto } from '../dto/request/update.user.dto';
@@ -8,7 +9,10 @@ import { UserProfileDto } from '../dto/response/user.profile.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly sendgridService: SengridService,
+  ) {}
 
   async findOneByEmail(email: string): Promise<User> {
     return await this.prismaService.user.findFirst({
@@ -67,5 +71,9 @@ export class UsersService {
         ...input,
       },
     });
+  }
+
+  async sendEmailToUser(email, options) {
+    await this.sendgridService.createEmail({ to: email, ...options });
   }
 }
