@@ -18,6 +18,7 @@
     "test:coverage": "npx dotenv -e .env.test -- jest --collect-coverage --runInBand",
     "test:categories": "npx dotenv -e .env.test -- jest categories  --runInBand",
     "test:categories:cov": "npx dotenv -e .env.test -- jest categories --collect-coverage --runInBand",
+    "test:products:cov": "npx dotenv -e .env.test -- jest products --collect-coverage --runInBand",
     "test:tokens:cov": "npx dotenv -e .env.test -- jest tokens --collect-coverage --runInBand",
     "test:sendgrid:cov": "npx dotenv -e .env.test -- jest sendgrid --collect-coverage --runInBand",
     "test:auth:cov": "npx dotenv -e .env.test -- jest auth --collect-coverage --runInBand",

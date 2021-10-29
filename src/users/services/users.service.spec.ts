@@ -8,6 +8,7 @@ describe('UsersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PrismaModule, CategoriesModule],
       providers: [UsersService],
     }).compile();
 

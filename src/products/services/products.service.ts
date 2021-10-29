@@ -1,15 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
-import { plainToClass } from 'class-transformer';
-import { AttachmentService } from 'src/attachment/services/attachment.service';
-import { CategoriesService } from 'src/categories/services/categories.service';
-import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { PrismaService } from 'src/prisma/services/prisma.service';
-import { paginateParams, paginationSerializer } from 'src/utils';
+import { AttachmentService } from '../../attachment/services/attachment.service';
+import { CategoriesService } from '../../categories/services/categories.service';
+import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
+import { PrismaService } from '../../prisma/services/prisma.service';
+import { UsersService } from '../../users/services/users.service';
+import { paginateParams, paginationSerializer } from '../../utils';
 import { CreateProductDto } from '../dto/create-product.dto';
-import { ProductInfoDto } from '../dto/product-info.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
-import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
 export class ProductsService {
@@ -78,10 +76,6 @@ export class ProductsService {
   }
 
   async create(input: CreateProductDto): Promise<Product> {
-    if (input?.categoryId) {
-      await this.categoriesService.findOneById(input.categoryId);
-    }
-
     return await this.prismaService.product.create({
       data: {
         ...input,

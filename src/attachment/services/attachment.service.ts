@@ -2,7 +2,7 @@ import { Attachment } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3 } from 'aws-sdk';
-import { PrismaService } from 'src/prisma/services/prisma.service';
+import { PrismaService } from '../../prisma/services/prisma.service';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
