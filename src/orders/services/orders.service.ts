@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { PrismaService } from 'src/prisma/services/prisma.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
@@ -56,6 +60,19 @@ export class OrdersService {
       pageInfo,
       data,
     };
+  }
+
+  async findOrderByUserId(userId: string, orderId: string) {
+    const order = await this.prismaService.order.findUnique({
+      where: { id: orderId },
+      rejectOnNotFound: false,
+    });
+
+    if (order.userId !== userId) {
+      throw new NotFoundException();
+    }
+
+    return order;
   }
 
   async createOrderDetails(shopcartItems) {
