@@ -24,6 +24,7 @@ export class ProductsService implements ICrud<Product> {
       filename,
     );
 
+    const product = await this.findOneById(productId);
     await this.prismaService.product.update({
       where: {
         id: productId,

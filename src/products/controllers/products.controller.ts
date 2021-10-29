@@ -25,6 +25,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @Public()
   @Post('products/:productId/image')
   @UseInterceptors(FileInterceptor('file'))
   async addFile(
@@ -50,7 +51,7 @@ export class ProductsController {
     return this.productsService.find({ page, perPage });
   }
 
-  @Role(Roles.moderator)
+  @Role(Roles.customer)
   @Post('products')
   async create(@Body() body: CreateProductDto) {
     return this.productsService.create(body);

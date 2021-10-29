@@ -29,9 +29,6 @@ export class AttachmentService {
         key: uploadResult.Key,
         url: uploadResult.Location,
       },
-      include: {
-        product: true,
-      },
     });
 
     return newFile;
