@@ -25,7 +25,7 @@ model User {
   tokens          Token[]
   orders          Order[]
   likes 	  Like[]
-  lastLike        Product?
+  lastLike        Product[]
 
   @@map("users")
 }

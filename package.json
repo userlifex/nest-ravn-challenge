@@ -30,6 +30,7 @@
     "@nestjs/mapped-types": "^1.0.0",
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/swagger": "^5.1.4",
     "@prisma/client": "^3.3.0",
     "@sendgrid/mail": "^7.5.0",
     "@types/aws-sdk": "^2.7.0",
@@ -46,6 +47,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "swagger-ui-express": "^4.1.6",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

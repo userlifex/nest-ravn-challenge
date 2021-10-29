@@ -10,11 +10,13 @@ import { paginateParams, paginationSerializer } from 'src/utils';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { ProductInfoDto } from '../dto/product-info.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
+import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
 export class ProductsService implements ICrud<Product> {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly usersService: UsersService,
     private readonly categoriesService: CategoriesService,
     private readonly attachmentService: AttachmentService,
   ) {}
@@ -218,5 +220,35 @@ export class ProductsService implements ICrud<Product> {
       pageInfo,
       data,
     };
+  }
+
+  async hasAttachment(productId: string) {
+    const product = await this.prismaService.product.findUnique({
+      where: { id: productId },
+      select: {
+        attachment: true,
+      },
+    });
+
+    if (!product.attachment) return false;
+
+    return true;
+  }
+  async sendEmailToLastUserLikes(product) {
+    if (!product.lastLikeUserId) return;
+    const hasAttachment = await this.hasAttachment(product.id);
+    let url = '';
+    if (hasAttachment) {
+      const file = await this.getPrivateFile(product.id);
+      url = file.url;
+    }
+
+    const user = await this.usersService.findOneById(product.lastLikeUserId);
+
+    await this.usersService.sendEmailToUser(user.email, {
+      subject: `Liked products`,
+      message: `A product that you like is running out of stock, if you want to take it, do not hesitate to look for it in our store before it is too late`,
+      link: url,
+    });
   }
 }

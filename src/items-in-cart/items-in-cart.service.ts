@@ -1,5 +1,5 @@
 import { ItemsInCart } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import e from 'express';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
@@ -63,6 +63,31 @@ export class ItemsInCartService {
       },
       rejectOnNotFound: false,
     });
+  }
+
+  async findManyToMakeOrder(shopcartId: string) {
+    const shopCartItems = await this.prismaService.itemsInCart.findMany({
+      where: {
+        shopCartId: shopcartId,
+      },
+      select: {
+        quantity: true,
+        product: {
+          select: {
+            id: true,
+            price: true,
+            stock: true,
+            lastLikeUserId: true,
+          },
+        },
+      },
+    });
+
+    if (shopCartItems.length === 0) {
+      throw new BadRequestException('there are 0 items in cart');
+    }
+
+    return shopCartItems;
   }
 
   async create(input: CreateItemInCartDto): Promise<ItemsInCart> {
