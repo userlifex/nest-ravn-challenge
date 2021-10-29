@@ -1,13 +1,15 @@
 import { ItemsInCart } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import e from 'express';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductsService } from 'src/products/services/products.service';
 import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
-import { CreateItemInCartDto } from './dto/create.item.in.cart.dto';
+import { CreateItemInCartDto } from '../dto/request/create.item.in.cart.dto';
+import { UpdateItemInCartDto } from '../dto/request/update.item.in.cart.dto';
+import { ItemInCartDto } from '../dto/response/item.in.cart.dto';
+import { ItemInCartPaginationDto } from '../dto/response/item.in.cart.pagination.dto';
 
 @Injectable()
 export class ItemsInCartService {
@@ -17,9 +19,10 @@ export class ItemsInCartService {
     private readonly productService: ProductsService,
   ) {}
 
-  async find(userId: string, { page, perPage }: InputPaginationDto) {
-    console.log(page, perPage);
-
+  async find(
+    userId: string,
+    { page, perPage }: InputPaginationDto,
+  ): Promise<ItemInCartPaginationDto> {
     const prismaPagination = paginateParams({ page, perPage });
 
     const shopCart = await this.shopCartService.findOneByUserId(userId);
@@ -32,12 +35,25 @@ export class ItemsInCartService {
 
     const pageInfo = paginationSerializer(total, { page, perPage });
 
-    const data = await this.prismaService.itemsInCart.findMany({
+    const items = await this.prismaService.itemsInCart.findMany({
       ...prismaPagination,
       where: {
         shopCartId: shopCart.id,
       },
+      select: {
+        id: true,
+        product: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            description: true,
+          },
+        },
+      },
     });
+
+    const data = plainToClass(ItemInCartDto, items);
 
     return {
       pageInfo,
@@ -45,12 +61,14 @@ export class ItemsInCartService {
     };
   }
 
-  async findOneById(id: string): Promise<ItemsInCart> {
-    return await this.prismaService.itemsInCart.findUnique({
+  async findOneById(id: string): Promise<ItemInCartDto> {
+    const item = await this.prismaService.itemsInCart.findUnique({
       where: {
         id,
       },
     });
+
+    return plainToClass(ItemInCartDto, item);
   }
 
   private async findOneByUniqueCompound(shopCartId: string, productId: string) {
@@ -65,7 +83,7 @@ export class ItemsInCartService {
     });
   }
 
-  async create(input: CreateItemInCartDto): Promise<ItemsInCart> {
+  async create(input: CreateItemInCartDto): Promise<CreateItemInCartDto> {
     const shopCart = await this.shopCartService.findOneByUserId(input.userId);
     const carItem = await this.findOneByUniqueCompound(
       shopCart.id,
@@ -78,11 +96,22 @@ export class ItemsInCartService {
           productId: input.productId,
           shopCartId: shopCart.id,
         },
+        select: {
+          id: true,
+          product: {
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              description: true,
+            },
+          },
+        },
       });
-      return newItem;
+      return plainToClass(CreateItemInCartDto, newItem);
     } else {
       const itemUpdated = await this.update(carItem.id, input.quantity, true);
-      return itemUpdated;
+      return plainToClass(CreateItemInCartDto, itemUpdated);
     }
   }
 
@@ -90,7 +119,7 @@ export class ItemsInCartService {
     id: string,
     quantity: number,
     fromCreate = false,
-  ): Promise<ItemsInCart> {
+  ): Promise<UpdateItemInCartDto> {
     const cartItem = await this.findOneById(id);
 
     if (fromCreate) {
@@ -98,7 +127,7 @@ export class ItemsInCartService {
     }
 
     const input = {
-      productId: cartItem.productId,
+      productId: cartItem.product.id,
       quantity,
     };
 
@@ -107,27 +136,39 @@ export class ItemsInCartService {
     const isStockAvailable = await this.verifyQuantity(id, input);
     console.log(isStockAvailable);
 
-    if (isStockAvailable) {
-      const itemUpdated = await this.prismaService.itemsInCart.update({
-        where: {
-          id,
-        },
-        data: {
-          quantity,
-        },
-      });
-      return itemUpdated;
+    if (!isStockAvailable) {
+      throw new BadRequestException('Stock is not available');
     }
 
-    console.log('cantidad excede del stock');
+    const itemUpdated = await this.prismaService.itemsInCart.update({
+      where: {
+        id,
+      },
+      data: {
+        quantity,
+      },
+      select: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            description: true,
+          },
+        },
+      },
+    });
+    return plainToClass(UpdateItemInCartDto, itemUpdated);
   }
 
-  async delete(id: string): Promise<ItemsInCart> {
-    return await this.prismaService.itemsInCart.delete({
+  async delete(id: string): Promise<ItemInCartDto> {
+    const item = await this.prismaService.itemsInCart.delete({
       where: {
         id,
       },
     });
+
+    return plainToClass(ItemInCartDto, item);
   }
 
   async deleteItemsByCartId(shopCartId: string) {

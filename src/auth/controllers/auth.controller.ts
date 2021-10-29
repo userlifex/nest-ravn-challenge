@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
 import { UserExist } from 'src/common/guards/user.exist.guard';
+import { UserEntity } from 'src/common/types';
+import { CurrentUser } from '../decorators/current-user.decorator';
 import { SignUpData } from '../dto/request/signup.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { AuthService } from '../services/auth.service';
@@ -27,9 +29,9 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async logIn(@Request() req) {
-    console.log(req.user);
-    return await this.authService.login(req.user);
+  async logIn(@CurrentUser() user: UserEntity) {
+    console.log(user);
+    return await this.authService.login(user);
   }
 
   @Public()
