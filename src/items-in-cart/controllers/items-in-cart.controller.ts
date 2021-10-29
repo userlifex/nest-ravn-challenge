@@ -1,4 +1,4 @@
-import { Roles } from '.prisma/client';
+import { ItemsInCart, Roles } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  Request,
 } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Role } from 'src/common/decorators/role.decorator';
@@ -31,7 +30,7 @@ export class ItemsInCartController {
     @CurrentUser() user: UserEntity,
     @Body('quantity') quantity: number,
     @Param('productId') productId: string,
-  ): Promise<CreateItemInCartDto> {
+  ): Promise<ItemInCartDto> {
     return this.itemsInCartService.create({
       userId: user.id,
       quantity: quantity,
@@ -45,13 +44,13 @@ export class ItemsInCartController {
     @CurrentUser() user: UserEntity,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
-  ): Promise<ItemInCartPaginationDto> {
+  ) {
     return this.itemsInCartService.find(user.id, { page, perPage });
   }
 
   @Role(Roles.customer)
   @Get('users/me/shopcart/items-in-cart/:id')
-  async getOneById(@Param('id') cartItemId: string): Promise<ItemInCartDto> {
+  async getOneById(@Param('id') cartItemId: string): Promise<ItemsInCart> {
     return this.itemsInCartService.findOneById(cartItemId);
   }
 

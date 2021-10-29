@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/services/prisma.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
 import { UsersService } from 'src/users/services/users.service';
 import { ProductsService } from 'src/products/services/products.service';

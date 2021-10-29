@@ -1,7 +1,6 @@
 import { IsInt } from 'class-validator';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 
-export class InfoPaginationDto implements IBaseDto {
+export class InfoPaginationDto {
   @IsInt()
   readonly perPage: number;
 

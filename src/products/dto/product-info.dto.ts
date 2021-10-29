@@ -1,10 +1,9 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { IsInt, IsObject, IsOptional, IsString } from 'class-validator';
 import { InfoCategoryDto } from 'src/categories/dto/info-category.dto';
-import { IBaseDto } from 'src/interfaces/base-dto.interface';
 
 @Exclude()
-export class ProductInfoDto implements IBaseDto {
+export class ProductInfoDto {
   @Expose()
   @IsString()
   readonly id: string;

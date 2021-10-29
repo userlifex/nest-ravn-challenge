@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { PrismaService } from './prisma/prisma.service';
+import { PrismaService } from './prisma/services/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'aws-sdk';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -17,6 +17,10 @@ async function bootstrap() {
       whitelist: true, // only accept the data what is permitted in dtos
       forbidNonWhitelisted: true, // throws error when there is data that is not in dto
       transform: true, // transform req in the dto object
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      validationError: { target: false, value: false },
     }),
   );
 

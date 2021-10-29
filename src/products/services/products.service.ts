@@ -4,8 +4,7 @@ import { plainToClass } from 'class-transformer';
 import { AttachmentService } from 'src/attachment/services/attachment.service';
 import { CategoriesService } from 'src/categories/services/categories.service';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { ICrud } from 'src/interfaces/crud.interface';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/services/prisma.service';
 import { paginateParams, paginationSerializer } from 'src/utils';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { ProductInfoDto } from '../dto/product-info.dto';
@@ -13,7 +12,7 @@ import { UpdateProductDto } from '../dto/update-product.dto';
 import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
-export class ProductsService implements ICrud<Product> {
+export class ProductsService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly usersService: UsersService,
