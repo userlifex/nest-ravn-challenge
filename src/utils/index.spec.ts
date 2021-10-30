@@ -1,5 +1,5 @@
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { paginateParams } from './index';
+import { paginateParams, paginationSerializer } from './index';
 
 describe('utils Test', () => {
   describe('pagination test', () => {
@@ -49,5 +49,39 @@ describe('utils Test', () => {
       expect(paginationParams.take).toBe(8);
       expect(paginationParams.skip).toBe(16);
     });
+
+    it('should throw an error when page is less 0', () => {
+      expect(() => {
+        const paginationParams = paginateParams({
+          page: -1,
+          perPage: 8,
+        });
+      }).toThrowError();
+    });
+  });
+
+  describe('page Info test', () => {
+    const total = 10;
+    const pagination = { page: 2, perPage: 10 };
+
+    const pageInfo = paginationSerializer(total, pagination);
+    expect(pageInfo.total).toBe(10);
+    expect(pageInfo.nextPage).toBeNull();
+  });
+
+  describe('page Info test', () => {
+    const total = 11;
+    const pagination = { page: 2, perPage: 10 };
+
+    const pageInfo = paginationSerializer(total, pagination);
+    expect(pageInfo.perPage).toBe(10);
+  });
+
+  describe('page Info test', () => {
+    const total = 11;
+    const pagination = { page: 2, perPage: 10 };
+
+    const pageInfo = paginationSerializer(total, pagination);
+    expect(pageInfo.perPage).toBe(10);
   });
 });
