@@ -44,7 +44,7 @@ export class ProductsController {
 
   @Public()
   @Get('products/:id')
-  asyncgetOne(@Param('id') id: string) {
+  async getOne(@Param('id') id: string) {
     return this.productsService.findOneByIdWithImg(id);
   }
 
@@ -67,7 +67,6 @@ export class ProductsController {
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log('hit');
     return this.productsService.addFile(id, file.buffer, file.originalname);
   }
 

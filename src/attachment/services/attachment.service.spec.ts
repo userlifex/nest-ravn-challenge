@@ -1,18 +1,48 @@
+import { UploadedFile } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Attachment } from '@sendgrid/helpers/classes';
+import { S3 } from 'aws-sdk';
+import { awsConfig, s3MockService } from '../../common/mocks/default.mock';
+import { PrismaModule } from '../../prisma/prisma.module';
+import { PrismaService } from '../../prisma/services/prisma.service';
 import { AttachmentService } from './attachment.service';
 
 describe('Service', () => {
-  let service: AttachmentService;
+  let attachmentService: AttachmentService;
+  let prismaService: PrismaService;
+  let module: TestingModule;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [AttachmentService],
+  beforeAll(async () => {
+    module = await Test.createTestingModule({
+      imports: [PrismaModule, ConfigModule.forFeature(awsConfig)],
+      providers: [
+        AttachmentService,
+        { provide: S3, useFactory: s3MockService },
+      ],
     }).compile();
 
-    service = module.get<AttachmentService>(AttachmentService);
+    prismaService = module.get<PrismaService>(PrismaService);
+    attachmentService = module.get<AttachmentService>(AttachmentService);
+
+    await prismaService.clearDatabase();
   });
 
-  it('should be defined', () => {
-    expect(AttachmentService).toBeDefined();
+  afterAll(async () => {
+    await module.close();
+    await prismaService.$disconnect();
+  });
+
+  it('should attachment be defined', () => {
+    expect(attachmentService).toBeDefined();
+  });
+
+  it('should upload a file to s3', async () => {
+    const attachment = await attachmentService.uploadFile(
+      Buffer.from('ok'),
+      'test.png',
+    );
+    console.log(attachment);
+    expect(attachment).toHaveProperty('id');
   });
 });
