@@ -26,6 +26,12 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+
+## Docs
+
+[Api documentation](https://nest-ravn-challenge.herokuapp.com/docs/) the way we use our api.
+
+
 ## Installation
 
 ```bash
