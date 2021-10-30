@@ -90,8 +90,6 @@ export class ItemsInCartService {
     );
 
     if (!cartItem) {
-      console.log('hit');
-
       const newItem = await this.prismaService.itemsInCart.create({
         data: {
           productId: input.productId,
@@ -119,8 +117,6 @@ export class ItemsInCartService {
   ): Promise<ItemInCartDto> {
     const cartItem = await this.findOneById(id);
 
-    console.log(cartItem);
-
     if (fromCreate) {
       quantity += cartItem.quantity;
     }
@@ -130,12 +126,7 @@ export class ItemsInCartService {
       quantity,
     };
 
-    console.log(input);
-
-    console.log(cartItem.quantity);
-
     const isStockAvailable = await this.verifyQuantity(id, input);
-    console.log(isStockAvailable);
 
     if (!isStockAvailable) {
       throw new BadRequestException('Stock is not available');

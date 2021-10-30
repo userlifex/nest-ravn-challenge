@@ -24,6 +24,7 @@
     "test:likes:cov": "npx dotenv -e .env.test -- jest likes --collect-coverage --runInBand",
     "test:auth:cov": "npx dotenv -e .env.test -- jest auth --collect-coverage --runInBand",
     "test:orders:cov": "npx dotenv -e .env.test -- jest orders --collect-coverage --runInBand",
+    "test:shopcarts:cov": "npx dotenv -e .env.test -- jest shopcarts --collect-coverage --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:migrate:dev": "prisma migrate dev && prisma generate",
     "prisma:migrate:test": "npx dotenv -e .env.test -- prisma migrate dev && prisma generate",
@@ -88,14 +89,21 @@
     "typescript": "^4.3.5"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "verbose": true,
-    "collectCoverageFrom": ["*/services/*.ts", "**/utils/*.ts"],
+    "collectCoverageFrom": [
+      "*/services/*.ts",
+      "**/utils/*.ts"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
