@@ -9,5 +9,6 @@ import { ItemsInCartService } from './services/items-in-cart.service';
   imports: [PrismaModule, ShopcartsModule, ProductsModule],
   controllers: [ItemsInCartController],
   providers: [ItemsInCartService],
+  exports: [ItemsInCartService],
 })
 export class ItemsInCartModule {}
