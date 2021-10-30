@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start:prod": "node dist/src/main.js",
+    "start:prod": "node dist/src/main",
     "prestart:prod": "npm run build",
     "postinstall": "npm run prestart:prod",
     "prebuild": "rimraf dist",
