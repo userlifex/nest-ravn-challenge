@@ -227,6 +227,7 @@ export class ProductsService {
 
     return true;
   }
+
   async sendEmailToLastUserLikes(product) {
     if (!product.lastLikeUserId) return;
     const hasAttachment = await this.hasAttachment(product.id);

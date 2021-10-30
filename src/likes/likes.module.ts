@@ -1,25 +1,23 @@
 import { Module } from '@nestjs/common';
 import { LikesService } from './services/likes.service';
 import { LikesController } from './controllers/likes.controller';
-import { PrismaService } from '../prisma/services/prisma.service';
-import { ProductsService } from '../products/services/products.service';
-import { CategoriesService } from '../categories/services/categories.service';
-import { AttachmentService } from '../attachment/services/attachment.service';
-import { UsersService } from '../users/services/users.service';
 import { UsersModule } from '../users/users.module';
-import { SendgridService } from '../common/sendgrid/services/sendgrid.service';
+import { AttachmentModule } from '../attachment/attachment.module';
+import { PrismaModule } from '../prisma/prisma.module';
+import { CategoriesModule } from '../categories/categories.module';
+import { SendgridModule } from '../common/sendgrid/sendgrid.module';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
-  imports: [UsersModule],
-  providers: [
-    AttachmentService,
-    LikesService,
-    ProductsService,
-    PrismaService,
-    CategoriesService,
-    UsersService,
-    SendgridService,
+  imports: [
+    UsersModule,
+    AttachmentModule,
+    PrismaModule,
+    CategoriesModule,
+    SendgridModule,
+    ProductsModule,
   ],
+  providers: [],
   controllers: [LikesController],
   exports: [LikesService],
 })

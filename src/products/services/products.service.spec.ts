@@ -5,12 +5,16 @@ import { AttachmentModule } from '../../attachment/attachment.module';
 import { SendgridModule } from '../../common/sendgrid/sendgrid.module';
 import { CategoriesModule } from '../../categories/categories.module';
 import { ProductsService } from './products.service';
+import { PrismaService } from '../../prisma/services/prisma.service';
+import { CreateProductDto } from '../dto/create-product.dto';
 
 describe('ProductsService', () => {
-  let service: ProductsService;
+  let module: TestingModule;
+  let productsService: ProductsService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         PrismaModule,
         AttachmentModule,
@@ -21,10 +25,87 @@ describe('ProductsService', () => {
       providers: [ProductsService],
     }).compile();
 
-    service = module.get<ProductsService>(ProductsService);
+    productsService = module.get<ProductsService>(ProductsService);
+    prismaService = module.get<PrismaService>(PrismaService);
+  });
+
+  afterAll(async () => {
+    await prismaService.clearDatabase();
+    await prismaService.$disconnect();
+    await module.close();
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(productsService).toBeDefined();
+  });
+
+  it('should find one by Id', async () => {
+    const product = await prismaService.product.create({
+      data: {
+        name: 'water',
+        price: 12,
+        stock: 10,
+      },
+    });
+
+    const searchedProduct = await productsService.findOneById(product.id);
+
+    expect(searchedProduct).toHaveProperty('id');
+    expect(searchedProduct.id).toEqual(product.id);
+  });
+
+  it('should validate stock when is less than stock', async () => {
+    const product = await prismaService.product.create({
+      data: {
+        name: 'water',
+        price: 12,
+        stock: 10,
+      },
+    });
+
+    const isValid = await productsService.validateStock(product.id, 9);
+
+    expect(isValid).toBeTruthy();
+  });
+
+  it('should validate stock when is great than stock', async () => {
+    const product = await prismaService.product.create({
+      data: {
+        name: 'water',
+        price: 12,
+        stock: 10,
+      },
+    });
+
+    const isValid = await productsService.validateStock(product.id, 11);
+
+    expect(isValid).toBeFalsy();
+  });
+
+  it('should create a product', async () => {
+    const product = await productsService.create({
+      name: 'product',
+      stock: 12,
+      price: 10,
+    } as CreateProductDto);
+
+    expect(product).toHaveProperty('id');
+  });
+
+  it('should delete a product', async () => {
+    const product = await productsService.create({
+      name: 'product',
+      stock: 12,
+      price: 10,
+    } as CreateProductDto);
+
+    await productsService.delete(product.id);
+
+    const searchedProduct = await prismaService.product.findUnique({
+      where: { id: product.id },
+      rejectOnNotFound: false,
+    });
+
+    expect(searchedProduct).toBeNull();
   });
 });

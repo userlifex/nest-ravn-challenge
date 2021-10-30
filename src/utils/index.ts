@@ -38,3 +38,40 @@ export const paginationSerializer = (
     totalPages,
   };
 };
+
+const foo = () => {
+  const irrelevantData = { price: 0, stock: 10 };
+  const products = [
+    {
+      name: 'p1',
+      ...irrelevantData,
+    },
+    {
+      name: 'p2',
+      ...irrelevantData,
+    },
+    {
+      name: 'p3',
+      ...irrelevantData,
+    },
+    {
+      name: 'p4',
+      ...irrelevantData,
+    },
+    {
+      name: 'p5',
+      ...irrelevantData,
+    },
+    {
+      name: 'p6',
+      ...irrelevantData,
+    },
+  ];
+
+  //const p1 = await prismaService.product.create({ data: { ...products[0] } });
+  //const p2 = await prismaService.product.create({ data: { ...products[1] } });
+  //const p3 = await prismaService.product.create({ data: { ...products[2] } });
+  //const p4 = await prismaService.product.create({ data: { ...products[3] } });
+  //const p5 = await prismaService.product.create({ data: { ...products[4] } });
+  //const p6 = await prismaService.product.create({ data: { ...products[5] } });
+};

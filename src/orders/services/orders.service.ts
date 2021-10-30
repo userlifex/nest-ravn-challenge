@@ -44,7 +44,7 @@ export class OrdersService {
   async findByUserId(userId: string, { page, perPage }: InputPaginationDto) {
     const prismaPagination = paginateParams({ page, perPage });
 
-    const total = await this.prismaService.order.count({});
+    const total = await this.prismaService.order.count({ where: { userId } });
 
     const pageInfo = paginationSerializer(total, { page, perPage });
 

@@ -16,7 +16,7 @@ export class LikesService {
       where: { productId, userId },
     });
 
-    if (count) {
+    if (count > 0) {
       throw new BadRequestException('like already exists');
     }
 
