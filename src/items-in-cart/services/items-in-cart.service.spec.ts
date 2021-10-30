@@ -6,7 +6,6 @@ import { AuthModule } from '../../auth/auth.module';
 import { AuthService } from '../../auth/services/auth.service';
 import { jwtConfigMock, jwtMockService } from '../../common/mocks/default.mock';
 import { SendgridModule } from '../../common/sendgrid/sendgrid.module';
-import { SendgridService } from '../../common/sendgrid/services/sendgrid.service';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { ProductsModule } from '../../products/products.module';
