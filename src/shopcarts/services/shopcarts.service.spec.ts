@@ -1,19 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthModule } from '../../auth/auth.module';
 import { AuthService } from '../../auth/services/auth.service';
-import { UsersService } from '../../users/services/users.service';
 import { UsersModule } from '../../users/users.module';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { ShopcartsService } from './shopcarts.service';
-import { plainToClass } from 'class-transformer';
-import { ShopCartDto } from '../dto/response/shopcart.dto';
 
 describe('ShopcartsService', () => {
   let shopCartService: ShopcartsService;
   let prismaService: PrismaService;
   let authService: AuthService;
-  let userService: UsersService;
   let module: TestingModule;
 
   beforeAll(async () => {
@@ -24,7 +20,6 @@ describe('ShopcartsService', () => {
 
     shopCartService = module.get<ShopcartsService>(ShopcartsService);
     prismaService = module.get<PrismaService>(PrismaService);
-    userService = module.get<UsersService>(UsersService);
     authService = module.get<AuthService>(AuthService);
 
     await prismaService.clearDatabase();
