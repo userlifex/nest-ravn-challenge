@@ -8,10 +8,10 @@ import {
   Param,
 } from '@nestjs/common';
 import { Roles } from '@prisma/client';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { Public } from 'src/common/decorators/public.decorator';
-import { Role } from 'src/common/decorators/role.decorator';
-import { UserEntity } from 'src/common/types';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Public } from '../../common/decorators/public.decorator';
+import { Role } from '../../common/decorators/role.decorator';
+import { UserEntity } from '../../common/types';
 import { OrdersService } from '../services/orders.service';
 
 @Controller('')
