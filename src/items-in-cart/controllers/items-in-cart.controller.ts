@@ -11,6 +11,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Role } from '../../common/decorators/role.decorator';
 import { UserEntity } from '../../common/types';
@@ -20,6 +21,7 @@ import { ItemInCartDto } from '../dto/response/item.in.cart.dto';
 import { ItemInCartPaginationDto } from '../dto/response/item.in.cart.pagination.dto';
 import { ItemsInCartService } from '../services/items-in-cart.service';
 
+@ApiTags('items-in-cart')
 @Controller()
 export class ItemsInCartController {
   constructor(private readonly itemsInCartService: ItemsInCartService) {}

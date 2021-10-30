@@ -17,7 +17,7 @@ import { ProductsModule } from '../products/products.module';
     SendgridModule,
     ProductsModule,
   ],
-  providers: [],
+  providers: [LikesService],
   controllers: [LikesController],
   exports: [LikesService],
 })
