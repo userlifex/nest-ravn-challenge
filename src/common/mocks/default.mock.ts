@@ -6,10 +6,10 @@ type Mock<T> = Record<keyof T, jest.Mock>;
 export type PartialMock<T> = Partial<Mock<T>>;
 
 export const jwtMockService = (): PartialMock<JwtService> => ({
-  verify: jest.fn().mockImplementation(() => ({
+  verifyAsync: jest.fn().mockImplementation(() => ({
     jti: 'ab0ab1a-b0ab2030405',
   })),
-  sign: jest.fn().mockImplementation(() => 'my.jwt.token'),
+  signAsync: jest.fn().mockImplementation(() => 'my.jwt.token'),
   decode: jest.fn(),
 });
 

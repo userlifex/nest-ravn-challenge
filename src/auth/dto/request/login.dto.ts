@@ -2,7 +2,7 @@ import { Expose } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 @Expose()
-export class LogInData {
+export class LoginDto {
   @IsNotEmpty()
   @IsEmail()
   readonly email: string;
