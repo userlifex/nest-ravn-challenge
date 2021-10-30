@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { ProductsModule } from 'src/products/products.module';
-import { ShopcartsModule } from 'src/shopcarts/shopcarts.module';
+import { PrismaModule } from '../prisma/prisma.module';
+import { ProductsModule } from '../products/products.module';
+import { ShopcartsModule } from '../shopcarts/shopcarts.module';
 import { ItemsInCartController } from './controllers/items-in-cart.controller';
 import { ItemsInCartService } from './services/items-in-cart.service';
 
@@ -9,5 +9,6 @@ import { ItemsInCartService } from './services/items-in-cart.service';
   imports: [PrismaModule, ShopcartsModule, ProductsModule],
   controllers: [ItemsInCartController],
   providers: [ItemsInCartService],
+  exports: [ItemsInCartService],
 })
 export class ItemsInCartModule {}

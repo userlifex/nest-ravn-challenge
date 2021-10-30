@@ -1,19 +1,21 @@
 import { Controller, Param, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Roles } from '@prisma/client';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { Public } from 'src/common/decorators/public.decorator';
-import { Role } from 'src/common/decorators/role.decorator';
-import { UserEntity } from 'src/common/types';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Public } from '../../common/decorators/public.decorator';
+import { Role } from '../../common/decorators/role.decorator';
+import { UserEntity } from '../../common/types';
 import { LikesService } from '../services/likes.service';
 
+@ApiTags('likes')
 @Controller('')
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
-  @Post('products/:productId/like')
+  @Post('products/:id/like')
   @Role(Roles.customer)
   async likeProduct(
     @CurrentUser() user: UserEntity,
-    @Param('productId') productId: string,
+    @Param('id') productId: string,
   ) {
     return this.likesService.likeProduct(productId, user.id);
   }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { UsersService } from 'src/users/services/users.service';
+import { PrismaModule } from '../prisma/prisma.module';
+import { UsersService } from '../users/services/users.service';
 import { ShopcartsController } from './controllers/shopcarts.controller';
 import { ShopcartsService } from './services/shopcarts.service';
 

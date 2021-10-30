@@ -1,11 +1,12 @@
 import { ItemsInCart } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { PrismaService } from 'src/prisma/services/prisma.service';
-import { ProductsService } from 'src/products/services/products.service';
-import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
-import { paginateParams, paginationSerializer } from 'src/utils';
+import { ProductsModule } from 'src/products/products.module';
+import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
+import { PrismaService } from '../../prisma/services/prisma.service';
+import { ProductsService } from '../../products/services/products.service';
+import { ShopcartsService } from '../../shopcarts/services/shopcarts.service';
+import { paginateParams, paginationSerializer } from '../../utils';
 import { CreateItemInCartDto } from '../dto/request/create.item.in.cart.dto';
 import { UpdateItemInCartDto } from '../dto/request/update.item.in.cart.dto';
 import { ItemInCartDto } from '../dto/response/item.in.cart.dto';
@@ -90,8 +91,6 @@ export class ItemsInCartService {
     );
 
     if (!cartItem) {
-      console.log('hit');
-
       const newItem = await this.prismaService.itemsInCart.create({
         data: {
           productId: input.productId,
@@ -119,8 +118,6 @@ export class ItemsInCartService {
   ): Promise<ItemInCartDto> {
     const cartItem = await this.findOneById(id);
 
-    console.log(cartItem);
-
     if (fromCreate) {
       quantity += cartItem.quantity;
     }
@@ -130,12 +127,7 @@ export class ItemsInCartService {
       quantity,
     };
 
-    console.log(input);
-
-    console.log(cartItem.quantity);
-
     const isStockAvailable = await this.verifyQuantity(id, input);
-    console.log(isStockAvailable);
 
     if (!isStockAvailable) {
       throw new BadRequestException('Stock is not available');

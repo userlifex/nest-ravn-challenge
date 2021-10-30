@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AttachmentModule } from '../attachment/attachment.module';
 import { AttachmentService } from '../attachment/services/attachment.service';
-import { SendgridService } from '../common/sendgrid/sendgrid.service';
+import { SendgridService } from '../common/sendgrid/services/sendgrid.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ProductsService } from '../products/services/products.service';
 import { UsersService } from '../users/services/users.service';

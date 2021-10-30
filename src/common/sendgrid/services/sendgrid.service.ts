@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import * as sgMail from '@sendgrid/mail';
-import { MessageDto } from 'src/common/dtos/message.dto';
+import { MessageDto } from '../../dtos/message.dto';
 
 @Injectable()
 export class SendgridService {
   constructor() {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
-  async createEmail(email: MessageDto): Promise<void> {
+
+  async createEmail(email: MessageDto) {
     const msg = {
       to: email.to,
       subject: email.subject,
@@ -21,13 +22,6 @@ export class SendgridService {
       }`,
     };
 
-    await sgMail
-      .send(msg)
-      .then((response) => {
-        console.log(response[0].statusCode);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    return await sgMail.send(msg);
   }
 }

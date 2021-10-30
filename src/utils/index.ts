@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
-import { InfoPaginationDto } from 'src/common/dtos/info-pagination.dto';
-import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { PrismaPaginationDto } from 'src/common/dtos/prisma-pagination.dto';
+import { InfoPaginationDto } from '../common/dtos/info-pagination.dto';
+import { InputPaginationDto } from '../common/dtos/input-pagination.dto';
+import { PrismaPaginationDto } from '../common/dtos/prisma-pagination.dto';
 
 export const paginateParams = ({
   page,

@@ -1,23 +1,12 @@
 import { ItemsInCart, ShopCart } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'src/prisma/services/prisma.service';
+import { PrismaService } from '../../prisma/services/prisma.service';
 import { ShopCartDto } from '../dto/response/shopcart.dto';
 
 @Injectable()
 export class ShopcartsService {
   constructor(private readonly prismaService: PrismaService) {}
-
-  async findOneById(id: string) {
-    const shopcart = await this.prismaService.shopCart.findUnique({
-      where: {
-        id,
-      },
-      rejectOnNotFound: true,
-    });
-
-    return shopcart;
-  }
 
   async findOneByUserId(userId: string): Promise<ShopCart> {
     const shopcart = await this.prismaService.shopCart.findUnique({

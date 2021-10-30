@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/services/prisma.service';
-import { ProductsService } from 'src/products/services/products.service';
+import { PrismaService } from '../../prisma/services/prisma.service';
+import { ProductsService } from '../../products/services/products.service';
 
 @Injectable()
 export class LikesService {
@@ -16,7 +16,7 @@ export class LikesService {
       where: { productId, userId },
     });
 
-    if (count) {
+    if (count > 0) {
       throw new BadRequestException('like already exists');
     }
 

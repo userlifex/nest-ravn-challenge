@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
-import { PrismaService } from 'src/prisma/services/prisma.service';
-import { paginateParams, paginationSerializer } from 'src/utils';
-import { UsersService } from 'src/users/services/users.service';
-import { ProductsService } from 'src/products/services/products.service';
-import { ItemsInCartService } from 'src/items-in-cart/services/items-in-cart.service';
-import { ShopcartsService } from 'src/shopcarts/services/shopcarts.service';
+import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
+import { PrismaService } from '../../prisma/services/prisma.service';
+import { paginateParams, paginationSerializer } from '../../utils';
+import { UsersService } from '../../users/services/users.service';
+import { ProductsService } from '../../products/services/products.service';
+import { ItemsInCartService } from '../../items-in-cart/services/items-in-cart.service';
+import { ShopcartsService } from '../../shopcarts/services/shopcarts.service';
 
 @Injectable()
 export class OrdersService {
@@ -29,10 +29,10 @@ export class OrdersService {
     const pageInfo = paginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.order.findMany({
+      ...prismaPagination,
       include: {
         user: true,
       },
-      ...prismaPagination,
     });
 
     return {
@@ -44,7 +44,7 @@ export class OrdersService {
   async findByUserId(userId: string, { page, perPage }: InputPaginationDto) {
     const prismaPagination = paginateParams({ page, perPage });
 
-    const total = await this.prismaService.order.count({});
+    const total = await this.prismaService.order.count({ where: { userId } });
 
     const pageInfo = paginationSerializer(total, { page, perPage });
 
