@@ -13,6 +13,7 @@
     "start:prod": "node dist/src/main.js",
     "prestart:prod": "npm run build",
     "build": "nest build",
+    "postinstall": "npx prisma generate && npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/src/main.js",
     "start:dev": "nest start --watch",
