@@ -58,9 +58,10 @@ describe('OrdersService', () => {
     });
 
     expect(async () => {
-      const orderS = await ordersService.findOrderByUserId('my.id', myOrder.id);
+      await ordersService.findOrderByUserId('my.id', myOrder.id);
     }).rejects.toThrow();
   });
+
   it('should return an order of a user', async () => {
     const user1 = await prismaService.user.create({
       data: { name: 'jon', email: 'jon@mail.co', password: '12345678' },
@@ -174,5 +175,43 @@ describe('OrdersService', () => {
     expect(ordersS).toHaveProperty('data');
     expect(ordersS).toHaveProperty('pageInfo');
     expect(ordersS.pageInfo.total).toBe(7);
+  });
+
+  it('should create orders details', async () => {
+    const product1 = await prismaService.product.create({
+      data: {
+        name: 'p1',
+        price: 2,
+        stock: 10,
+      },
+    });
+    const product2 = await prismaService.product.create({
+      data: {
+        name: 'p1',
+        price: 2,
+        stock: 15,
+      },
+    });
+    const product3 = await prismaService.product.create({
+      data: {
+        name: 'p1',
+        price: 2,
+        stock: 20,
+      },
+    });
+
+    const user = await prismaService.user.create({
+      data: {
+        name: 'user',
+        email: 'user@example.com',
+        password: '123456',
+        shopCart: {
+          create: {},
+        },
+      },
+      include: {
+        shopCart: true,
+      },
+    });
   });
 });

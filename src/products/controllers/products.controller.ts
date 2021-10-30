@@ -20,7 +20,9 @@ import { UpdateProductDto } from '../dto/update-product.dto';
 import { ProductsService } from '../services/products.service';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('products')
 @Controller()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -58,24 +60,24 @@ export class ProductsController {
     return this.productsService.delete(id);
   }
 
-  @Post('products/:productId/image')
+  @Post('products/:id/image')
   @Role(Roles.moderator)
   @UseInterceptors(FileInterceptor('file'))
   async addFile(
-    @Param('productId') id: string,
+    @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.productsService.addFile(id, file.buffer, file.originalname);
   }
 
   @Role(Roles.moderator)
-  @Get('products/:productId/image')
-  async getPrivateFile(@Param('productId') productId: string) {
+  @Get('products/:id/image')
+  async getPrivateFile(@Param('id') productId: string) {
     return this.productsService.getPrivateFile(productId);
   }
 
   @Public()
-  @Get('categories/:categoryId/products')
+  @Get('categories/:id/products')
   async getAllbyCategory(
     @Param('categoryId') categoryId: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,

@@ -29,10 +29,10 @@ export class OrdersService {
     const pageInfo = paginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.order.findMany({
+      ...prismaPagination,
       include: {
         user: true,
       },
-      ...prismaPagination,
     });
 
     return {

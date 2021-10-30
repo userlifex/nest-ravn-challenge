@@ -7,6 +7,7 @@ import {
   Post,
   Param,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Roles } from '@prisma/client';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
@@ -14,6 +15,7 @@ import { Role } from '../../common/decorators/role.decorator';
 import { UserEntity } from '../../common/types';
 import { OrdersService } from '../services/orders.service';
 
+@ApiTags('orders')
 @Controller('')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
