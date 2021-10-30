@@ -1,6 +1,7 @@
 import { ItemsInCart } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import { ProductsModule } from 'src/products/products.module';
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { ProductsService } from '../../products/services/products.service';

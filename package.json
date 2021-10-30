@@ -25,6 +25,7 @@
     "test:auth:cov": "npx dotenv -e .env.test -- jest auth --collect-coverage --runInBand",
     "test:orders:cov": "npx dotenv -e .env.test -- jest orders --collect-coverage --runInBand",
     "test:shopcarts:cov": "npx dotenv -e .env.test -- jest shopcarts --collect-coverage --runInBand",
+    "test:items-in-cart:cov": "npx dotenv -e .env.test -- jest items-in-cart --collect-coverage --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:migrate:dev": "prisma migrate dev && prisma generate",
     "prisma:migrate:test": "npx dotenv -e .env.test -- prisma migrate dev && prisma generate",
