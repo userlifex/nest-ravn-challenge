@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { ShopcartsModule } from 'src/shopcarts/shopcarts.module';
-import { ItemsInCartController } from './items-in-cart.controller';
-import { ItemsInCartService } from './items-in-cart.service';
+import { PrismaModule } from '../prisma/prisma.module';
+import { ProductsModule } from '../products/products.module';
+import { ShopcartsModule } from '../shopcarts/shopcarts.module';
+import { ItemsInCartController } from './controllers/items-in-cart.controller';
+import { ItemsInCartService } from './services/items-in-cart.service';
 
 @Module({
-  imports: [PrismaModule, ShopcartsModule],
+  imports: [PrismaModule, ShopcartsModule, ProductsModule],
   controllers: [ItemsInCartController],
   providers: [ItemsInCartService],
 })

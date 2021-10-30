@@ -1,4 +1,4 @@
-import { Roles } from '.prisma/client';
+import { ItemsInCart, Roles } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -10,12 +10,15 @@ import {
   Patch,
   Post,
   Query,
-  Request,
 } from '@nestjs/common';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { Role } from 'src/common/decorators/role.decorator';
-import { UserEntity } from 'src/common/types';
-import { ItemsInCartService } from './items-in-cart.service';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Role } from '../../common/decorators/role.decorator';
+import { UserEntity } from '../../common/types';
+import { CreateItemInCartDto } from '../dto/request/create.item.in.cart.dto';
+import { UpdateItemInCartDto } from '../dto/request/update.item.in.cart.dto';
+import { ItemInCartDto } from '../dto/response/item.in.cart.dto';
+import { ItemInCartPaginationDto } from '../dto/response/item.in.cart.pagination.dto';
+import { ItemsInCartService } from '../services/items-in-cart.service';
 
 @Controller()
 export class ItemsInCartController {
@@ -27,7 +30,7 @@ export class ItemsInCartController {
     @CurrentUser() user: UserEntity,
     @Body('quantity') quantity: number,
     @Param('productId') productId: string,
-  ) {
+  ): Promise<ItemInCartDto> {
     return this.itemsInCartService.create({
       userId: user.id,
       quantity: quantity,
@@ -36,7 +39,7 @@ export class ItemsInCartController {
   }
 
   @Role(Roles.customer)
-  @Get('products/:productId/items-in-cart')
+  @Get('users/me/shopcart/items-in-cart')
   async getAll(
     @CurrentUser() user: UserEntity,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
@@ -46,23 +49,23 @@ export class ItemsInCartController {
   }
 
   @Role(Roles.customer)
-  @Get('products/:productId/items-in-cart/:id')
-  async getOneById(@Param('id') cartItemId: string) {
+  @Get('users/me/shopcart/items-in-cart/:id')
+  async getOneById(@Param('id') cartItemId: string): Promise<ItemsInCart> {
     return this.itemsInCartService.findOneById(cartItemId);
   }
 
   @Role(Roles.customer)
-  @Patch('products/:productId/items-in-cart/:id')
+  @Patch('users/me/shopcart/items-in-cart/:id')
   async update(
     @Param('id') cartItemId: string,
     @Body('quantity') quantity: number,
-  ) {
+  ): Promise<UpdateItemInCartDto> {
     return this.itemsInCartService.update(cartItemId, quantity);
   }
 
   @Role(Roles.customer)
-  @Delete('products/:productId/items-in-cart/:id')
-  async delete(@Param('id') cartItemId: string) {
+  @Delete('users/me/shopcart/items-in-cart/:id')
+  async delete(@Param('id') cartItemId: string): Promise<ItemInCartDto> {
     return this.itemsInCartService.delete(cartItemId);
   }
 }
