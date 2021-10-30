@@ -1,7 +1,7 @@
 import { ItemsInCart, ShopCart } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'src/prisma/services/prisma.service';
+import { PrismaService } from '../../prisma/services/prisma.service';
 import { ShopCartDto } from '../dto/response/shopcart.dto';
 
 @Injectable()
