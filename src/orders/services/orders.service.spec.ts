@@ -45,6 +45,53 @@ describe('OrdersService', () => {
     expect(ordersService).toBeDefined();
   });
 
+  it('should return all the orders', async () => {
+    const user1 = await prismaService.user.create({
+      data: { name: 'jon', email: 'jon@mail.co', password: '12345678' },
+    });
+    const user2 = await prismaService.user.create({
+      data: { name: 'jon', email: 'jo1n@mail.co', password: '12345678' },
+    });
+
+    const orders = await prismaService.order.createMany({
+      data: [
+        {
+          total: 100,
+          userId: user1.id,
+        },
+        {
+          total: 101,
+          userId: user2.id,
+        },
+        {
+          total: 102,
+          userId: user2.id,
+        },
+        {
+          total: 103,
+          userId: user2.id,
+        },
+        {
+          total: 104,
+          userId: user2.id,
+        },
+        {
+          total: 105,
+          userId: user2.id,
+        },
+        {
+          total: 105,
+          userId: user2.id,
+        },
+      ],
+    });
+
+    const ordersS = await ordersService.find({ page: 1, perPage: 2 });
+
+    expect(ordersS).toHaveProperty('data');
+    expect(ordersS).toHaveProperty('pageInfo');
+    expect(ordersS.pageInfo.total).toBe(7);
+  });
   it('should throw an error if an order is not of a user', async () => {
     const user1 = await prismaService.user.create({
       data: { name: 'jon', email: 'jon@mail.co', password: '12345678' },
@@ -127,54 +174,6 @@ describe('OrdersService', () => {
     expect(ordersS).toHaveProperty('data');
     expect(ordersS).toHaveProperty('pageInfo');
     expect(ordersS.pageInfo.total).toBe(3);
-  });
-
-  it('should return all the orders', async () => {
-    const user1 = await prismaService.user.create({
-      data: { name: 'jon', email: 'jon@mail.co', password: '12345678' },
-    });
-    const user2 = await prismaService.user.create({
-      data: { name: 'jon', email: 'jo1n@mail.co', password: '12345678' },
-    });
-
-    const orders = await prismaService.order.createMany({
-      data: [
-        {
-          total: 100,
-          userId: user1.id,
-        },
-        {
-          total: 101,
-          userId: user2.id,
-        },
-        {
-          total: 102,
-          userId: user2.id,
-        },
-        {
-          total: 103,
-          userId: user2.id,
-        },
-        {
-          total: 104,
-          userId: user2.id,
-        },
-        {
-          total: 105,
-          userId: user2.id,
-        },
-        {
-          total: 105,
-          userId: user2.id,
-        },
-      ],
-    });
-
-    const ordersS = await ordersService.find({ page: 1, perPage: 2 });
-
-    expect(ordersS).toHaveProperty('data');
-    expect(ordersS).toHaveProperty('pageInfo');
-    expect(ordersS.pageInfo.total).toBe(7);
   });
 
   it('should create orders details', async () => {

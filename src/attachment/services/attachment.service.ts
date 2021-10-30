@@ -7,10 +7,7 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AttachmentService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async uploadFile(databuffer: Buffer, filename: string): Promise<Attachment> {
     const s3 = new S3();
