@@ -17,4 +17,6 @@ export const jwtConfigMock = registerAs('jwt', () => ({
   jwtSecret: 'secret',
 }));
 
-export const sendGridMockService = (): PartialMock<SendgridService> => ({});
+export const sendGridMockService = (): Mock<SendgridService> => ({
+  createEmail: jest.fn(),
+});
