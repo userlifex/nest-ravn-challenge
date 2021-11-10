@@ -1,10 +1,9 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AttachmentModule } from '../attachment/attachment.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { SendgridModule } from '../common/sendgrid/sendgrid.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { UsersModule } from '../users/users.module';
-
 import { ProductsController } from './controllers/products.controller';
 import { ProductsService } from './services/products.service';
 
@@ -13,8 +12,8 @@ import { ProductsService } from './services/products.service';
     PrismaModule,
     AttachmentModule,
     SendgridModule,
-    CategoriesModule,
     UsersModule,
+    forwardRef(() => CategoriesModule),
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
