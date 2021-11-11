@@ -155,3 +155,5 @@ dist
 
 # Env
 *.env
+
+src/schema.gql
