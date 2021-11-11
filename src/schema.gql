@@ -1,0 +1,14 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CategoryModel {
+  createdAt: String!
+  id: String!
+  name: String!
+  updatedAt: String!
+}
+
+type Query {
+  categories(page: Int!, perPage: Int!): [CategoryModel!]!
+}

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { CategoriesModule } from './categories/categories.module';
@@ -24,8 +24,8 @@ import { join } from 'path';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
-    ProductsModule,
     CategoriesModule,
+    ProductsModule,
     UsersModule,
     OrdersModule,
     ItemsInCartModule,
@@ -38,6 +38,7 @@ import { join } from 'path';
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+
       context: ({ req, res, payload, connection }) => ({
         req,
         res,
@@ -46,7 +47,7 @@ import { join } from 'path';
       }),
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     AppService,
     // {

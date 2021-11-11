@@ -1,22 +1,23 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AttachmentModule } from '../attachment/attachment.module';
-import { AttachmentService } from '../attachment/services/attachment.service';
-import { SendgridService } from '../common/sendgrid/services/sendgrid.service';
 import { PrismaModule } from '../prisma/prisma.module';
-import { ProductsService } from '../products/services/products.service';
-import { UsersService } from '../users/services/users.service';
+import { ProductsModule } from '../products/products.module';
+import { UsersModule } from '../users/users.module';
+import { SendgridModule } from '../common/sendgrid/sendgrid.module';
 import { CategoriesController } from './controllers/categories.controller';
 import { CategoriesService } from './services/categories.service';
+import { CategoriesResolver } from './resolvers/categories.resolver';
 
 @Module({
-  imports: [PrismaModule, AttachmentModule],
-  controllers: [CategoriesController],
-  providers: [
-    CategoriesService,
-    ProductsService,
-    UsersService,
-    SendgridService,
+  imports: [
+    PrismaModule,
+    AttachmentModule,
+    UsersModule,
+    SendgridModule,
+    forwardRef(() => ProductsModule),
   ],
-  exports: [CategoriesService],
+  controllers: [CategoriesController],
+  providers: [CategoriesService, CategoriesResolver],
+  exports: [CategoriesService, CategoriesResolver],
 })
 export class CategoriesModule {}
