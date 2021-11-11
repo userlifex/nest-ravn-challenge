@@ -8,7 +8,7 @@ import { ShopCartDto } from '../dto/response/shopcart.dto';
 export class ShopcartsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findOneByUserId(userId: string): Promise<ShopCart> {
+  async findOneByUserId(userId: string): Promise<ShopCartDto> {
     const shopcart = await this.prismaService.shopCart.findUnique({
       where: {
         userId,
@@ -32,7 +32,7 @@ export class ShopcartsService {
       rejectOnNotFound: true,
     });
 
-    return shopcart;
+    return plainToClass(ShopCartDto, shopcart);
   }
 
   async validateShopcartByUser(userId: string) {

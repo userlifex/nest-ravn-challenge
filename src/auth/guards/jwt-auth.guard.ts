@@ -7,10 +7,7 @@ import { TokensService } from '../../tokens/services/tokens.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(
-    private readonly reflector: Reflector,
-    private readonly tokensService: TokensService,
-  ) {
+  constructor(private readonly reflector: Reflector) {
     super();
   }
   canActivate(

@@ -34,4 +34,3 @@ export const awsConfig = registerAs('s3', () => ({
   bucket: 'test_bucket',
   expirationTime: 900,
 }));
-
