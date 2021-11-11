@@ -17,8 +17,6 @@ import { TokensModule } from './tokens/tokens.module';
 import { UsersModule } from './users/users.module';
 import { AttachmentModule } from './attachment/attachment.module';
 import { LikesModule } from './likes/likes.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -38,7 +36,6 @@ import { join } from 'path';
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
-
       context: ({ req, res, payload, connection }) => ({
         req,
         res,
@@ -49,7 +46,6 @@ import { join } from 'path';
   ],
   controllers: [],
   providers: [
-    AppService,
     // {
     //   provide: APP_GUARD,
     //   useClass: JwtAuthGuard,
