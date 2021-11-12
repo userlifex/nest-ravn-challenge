@@ -10,15 +10,15 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Role } from '../../common/decorators/role.decorator';
 import { UserEntity } from '../../common/types';
-import { CreateItemInCartDto } from '../dto/request/create.item.in.cart.dto';
 import { UpdateItemInCartDto } from '../dto/request/update.item.in.cart.dto';
 import { ItemInCartDto } from '../dto/response/item.in.cart.dto';
-import { ItemInCartPaginationDto } from '../dto/response/item.in.cart.pagination.dto';
 import { ItemsInCartService } from '../services/items-in-cart.service';
 
 @ApiTags('items-in-cart')
@@ -26,6 +26,7 @@ import { ItemsInCartService } from '../services/items-in-cart.service';
 export class ItemsInCartController {
   constructor(private readonly itemsInCartService: ItemsInCartService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Role(Roles.customer)
   @Post('products/:productId/items-in-cart')
   async create(
@@ -40,7 +41,7 @@ export class ItemsInCartController {
     });
   }
 
-  @Role(Roles.customer)
+  @UseGuards(JwtAuthGuard)
   @Get('users/me/shopcart/items-in-cart')
   async getAll(
     @CurrentUser() user: UserEntity,
@@ -50,13 +51,11 @@ export class ItemsInCartController {
     return this.itemsInCartService.find(user.id, { page, perPage });
   }
 
-  @Role(Roles.customer)
   @Get('users/me/shopcart/items-in-cart/:id')
   async getOneById(@Param('id') cartItemId: string): Promise<ItemsInCart> {
     return this.itemsInCartService.findOneById(cartItemId);
   }
 
-  @Role(Roles.customer)
   @Patch('users/me/shopcart/items-in-cart/:id')
   async update(
     @Param('id') cartItemId: string,
@@ -65,7 +64,6 @@ export class ItemsInCartController {
     return this.itemsInCartService.update(cartItemId, quantity);
   }
 
-  @Role(Roles.customer)
   @Delete('users/me/shopcart/items-in-cart/:id')
   async delete(@Param('id') cartItemId: string): Promise<ItemInCartDto> {
     return this.itemsInCartService.delete(cartItemId);

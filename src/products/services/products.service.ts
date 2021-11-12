@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
 import { AttachmentService } from '../../attachment/services/attachment.service';
 import { CategoriesService } from '../../categories/services/categories.service';
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
@@ -7,6 +8,7 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 import { UsersService } from '../../users/services/users.service';
 import { paginateParams, paginationSerializer } from '../../utils';
 import { CreateProductDto } from '../dto/create-product.dto';
+import { PaginatedProduct, ProductInfoDto } from '../dto/product-info.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 
 @Injectable()
@@ -83,7 +85,7 @@ export class ProductsService {
     });
   }
 
-  async find({ page, perPage }: InputPaginationDto) {
+  async find({ page, perPage }: InputPaginationDto): Promise<PaginatedProduct> {
     const prismaPagination = paginateParams({ page, perPage });
 
     const total = await this.prismaService.product.count({});
@@ -107,7 +109,7 @@ export class ProductsService {
 
     return {
       pageInfo,
-      data,
+      data: plainToClass(ProductInfoDto, data),
     };
   }
 

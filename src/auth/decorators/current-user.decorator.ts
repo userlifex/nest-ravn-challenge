@@ -6,8 +6,6 @@ export const CurrentUser = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
     if (context.getType<GqlContextType>() === 'graphql') {
       const ctx = GqlExecutionContext.create(context);
-      console.log(ctx.getContext().req.user);
-
       return ctx.getContext().req.user;
     } else {
       const request = context.switchToHttp().getRequest();
