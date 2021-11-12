@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { RestPaginatedType } from 'src/common/dtos/rest-pagination.dto';
-import { InfoCategoryDto } from '../../categories/dto/info-category.dto';
+import { InfoCategoryDto } from '../../../categories/dtos/response/info-category.dto';
 
 @Exclude()
 export class ProductInfoDto {

@@ -14,9 +14,9 @@ import { Roles } from '@prisma/client';
 import { Public } from '../../common/decorators/public.decorator';
 import { Role } from '../../common/decorators/role.decorator';
 import { CategoriesService } from '../services/categories.service';
-import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
-import {ApiTags} from '@nestjs/swagger';
+import { CreateCategoryDto } from '../dtos/request/create-category.dto';
+import { UpdateCategoryDto } from '../dtos/request/update-category.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('categories')
 @Controller('')

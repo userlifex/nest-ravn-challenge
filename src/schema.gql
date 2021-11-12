@@ -13,6 +13,16 @@ input CreateCategoryInput {
   name: String!
 }
 
+input CreateProductInput {
+  categoryId: String
+  description: String
+  imageUrl: String
+  name: String!
+  numLikes: Int = 0
+  price: Float!
+  stock: Int!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -42,13 +52,15 @@ type Mutation {
   addProductToCart(productId: String!, quantity: Float!): ItemInCartModel!
   changePassword(password: String!, token: String!): PasswordRecoverModel!
   createCategory(input: CreateCategoryInput!): CategoryModel!
-  de(id: String!, input: UpdateCategoryInput!): CategoryModel!
+  createProduct(input: CreateProductInput!): ProductModel!
   delete(id: String!): ItemInCartModel!
   deleteCategory(id: String!): CategoryModel!
   logIn(data: LogInInput!): TokenModel!
   recoverPassword(email: String!): PasswordRecoverModel!
   signUp(data: SignUpInput!): UserModel!
   update(id: String!, quantity: Float!): ItemInCartModel!
+  updateCategory(id: String!, input: UpdateCategoryInput!): CategoryModel!
+  updateProduct(id: String!, input: UpdateProductInput!): ProductModel!
 }
 
 type PaginatedCategories {
@@ -58,6 +70,11 @@ type PaginatedCategories {
 
 type PaginatedItemsInCart {
   data: [ItemInCartModel!]
+  pageInfo: InfoPaginationModel
+}
+
+type PaginatedProducts {
+  data: [ProductModel!]
   pageInfo: InfoPaginationModel
 }
 
@@ -71,17 +88,25 @@ type PasswordRecoverModel {
 }
 
 type ProductModel {
+  category: CategoryModel
+  createdAt: String!
   id: String!
+  imgUrl: String
   name: String!
+  price: Float!
+  stock: Int!
+  updatedAt: String!
 }
 
 type Query {
   getAProfile(userId: String!): UserModel!
   getAll(pagination: PaginationInput!): PaginatedItemsInCart!
   getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
+  getAllProducts(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
   getMyProfile: UserProfileModel!
   getOneById(itemId: String!): ItemInCartModel!
   getOneCategory(id: String!): CategoryModel!
+  getProductsByCategory(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
   shopcart: ShopCartModel!
 }
 
@@ -101,7 +126,17 @@ type TokenModel {
 }
 
 input UpdateCategoryInput {
-  name: String!
+  name: String
+}
+
+input UpdateProductInput {
+  categoryId: String
+  description: String
+  imageUrl: String
+  name: String
+  numLikes: Int = 0
+  price: Float
+  stock: Int
 }
 
 type UserModel {
