@@ -42,13 +42,13 @@ type Mutation {
   addProductToCart(productId: String!, quantity: Float!): ItemInCartModel!
   changePassword(password: String!, token: String!): PasswordRecoverModel!
   createCategory(input: CreateCategoryInput!): CategoryModel!
-  de(id: String!, input: UpdateCategoryInput!): CategoryModel!
   delete(id: String!): ItemInCartModel!
   deleteCategory(id: String!): CategoryModel!
   logIn(data: LogInInput!): TokenModel!
   recoverPassword(email: String!): PasswordRecoverModel!
   signUp(data: SignUpInput!): UserModel!
   update(id: String!, quantity: Float!): ItemInCartModel!
+  updateCategory(id: String!, input: UpdateCategoryInput!): CategoryModel!
 }
 
 type PaginatedCategories {

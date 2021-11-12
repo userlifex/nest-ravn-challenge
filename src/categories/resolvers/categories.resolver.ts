@@ -13,6 +13,9 @@ import { CreateCategoryInput } from '../dto/inputs/create-category.input';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { UpdateCategoryInput } from '../dto/inputs/udpate-category.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlJwtAuthGuard } from 'src/auth/guards/gql-jwt.guard';
+import { RolesGuard } from 'src/common/guards/role.guard';
 
 @Resolver('categories')
 export class CategoriesResolver {
@@ -27,7 +30,8 @@ export class CategoriesResolver {
     return categories;
   }
 
-  @Public()
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Role(Roles.moderator)
   @Mutation(() => CategoryModel)
   async createCategory(
     @Args('input') input: CreateCategoryInput,
@@ -38,7 +42,8 @@ export class CategoriesResolver {
     return plainToClass(CategoryModel, category);
   }
 
-  @Public()
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Role(Roles.moderator)
   @Mutation(() => CategoryModel)
   async deleteCategory(@Args('id') id: string): Promise<CategoryModel> {
     const category = await this.categoriesService.delete(id);
@@ -46,9 +51,10 @@ export class CategoriesResolver {
     return plainToClass(CategoryModel, category);
   }
 
-  @Public()
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Role(Roles.moderator)
   @Mutation(() => CategoryModel)
-  async de(
+  async updateCategory(
     @Args('input') input: UpdateCategoryInput,
     @Args('id') id: string,
   ): Promise<CategoryModel> {
@@ -57,6 +63,7 @@ export class CategoriesResolver {
 
     return plainToClass(CategoryModel, category);
   }
+
   @Public()
   @Query(() => CategoryModel)
   async getOneCategory(@Args('id') id: string): Promise<CategoryModel> {
