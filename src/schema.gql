@@ -55,6 +55,7 @@ type Mutation {
   createProduct(input: CreateProductInput!): ProductModel!
   delete(id: String!): ItemInCartModel!
   deleteCategory(id: String!): CategoryModel!
+  deleteProduct(id: String!): ProductModel!
   logIn(data: LogInInput!): TokenModel!
   recoverPassword(email: String!): PasswordRecoverModel!
   signUp(data: SignUpInput!): UserModel!
@@ -103,11 +104,12 @@ type Query {
   getAProfile(userId: String!): UserModel!
   getAll(pagination: PaginationInput!): PaginatedItemsInCart!
   getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
-  getAllProducts(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+  getAllProducts(categoryId: String = "", id: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
   getMyProfile: UserProfileModel!
   getOneById(itemId: String!): ItemInCartModel!
   getOneCategory(id: String!): CategoryModel!
-  getProductsByCategory(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+  getProductsByCategory(categoryId: String = "", id: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+  shopcart: ShopCartModel!
 }
 
 type ShopCartModel {
