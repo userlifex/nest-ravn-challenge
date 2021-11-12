@@ -7,8 +7,8 @@ import { Category } from '@prisma/client';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { paginateParams, paginationSerializer } from '../../utils';
-import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
+import { CreateCategoryDto } from '../dtos/request/create-category.dto';
+import { UpdateCategoryDto } from '../dtos/request/update-category.dto';
 
 @Injectable()
 export class CategoriesService {

@@ -5,6 +5,7 @@ import { SendgridModule } from '../common/sendgrid/sendgrid.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { UsersModule } from '../users/users.module';
 import { ProductsController } from './controllers/products.controller';
+import { ProductResolver } from './resolvers/product.resolver';
 import { ProductsService } from './services/products.service';
 
 @Module({
@@ -16,7 +17,7 @@ import { ProductsService } from './services/products.service';
     forwardRef(() => CategoriesModule),
   ],
   controllers: [ProductsController],
-  providers: [ProductsService],
-  exports: [ProductsService],
+  providers: [ProductsService, ProductResolver],
+  exports: [ProductsService, ProductResolver],
 })
 export class ProductsModule {}

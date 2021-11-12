@@ -7,12 +7,12 @@ import { PaginationArgs } from '../../common/dtos/args/pagination.args';
 import {
   CategoryModel,
   PaginatedCategories,
-} from '../dto/models/category.model';
+} from '../dtos/models/category.model';
 import { CategoriesService } from '../services/categories.service';
-import { CreateCategoryInput } from '../dto/inputs/create-category.input';
-import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { UpdateCategoryInput } from '../dto/inputs/udpate-category.input';
+import { CreateCategoryInput } from '../dtos/inputs/create-category.input';
+import { CreateCategoryDto } from '../dtos/request/create-category.dto';
+import { UpdateCategoryDto } from '../dtos/request/update-category.dto';
+import { UpdateCategoryInput } from '../dtos/inputs/udpate-category.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlJwtAuthGuard } from 'src/auth/guards/gql-jwt.guard';
 import { RolesGuard } from 'src/common/guards/role.guard';
