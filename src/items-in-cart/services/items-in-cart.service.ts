@@ -7,9 +7,10 @@ import { ProductsService } from '../../products/services/products.service';
 import { ShopcartsService } from '../../shopcarts/services/shopcarts.service';
 import { paginateParams, paginationSerializer } from '../../utils';
 import { CreateItemInCartDto } from '../dto/request/create.item.in.cart.dto';
-import { UpdateItemInCartDto } from '../dto/request/update.item.in.cart.dto';
-import { ItemInCartDto } from '../dto/response/item.in.cart.dto';
-import { ItemInCartPaginationDto } from '../dto/response/item.in.cart.pagination.dto';
+import {
+  ItemInCartDto,
+  PaginatedItemInCart,
+} from '../dto/response/item.in.cart.dto';
 
 @Injectable()
 export class ItemsInCartService {
@@ -19,7 +20,10 @@ export class ItemsInCartService {
     private readonly productService: ProductsService,
   ) {}
 
-  async find(userId: string, { page, perPage }: InputPaginationDto) {
+  async find(
+    userId: string,
+    { page, perPage }: InputPaginationDto,
+  ): Promise<PaginatedItemInCart> {
     const prismaPagination = paginateParams({ page, perPage });
 
     const shopCart = await this.shopCartService.findOneByUserId(userId);
@@ -37,17 +41,8 @@ export class ItemsInCartService {
       where: {
         shopCartId: shopCart.id,
       },
-      select: {
-        id: true,
-        product: {
-          select: {
-            id: true,
-            name: true,
-            price: true,
-            description: true,
-          },
-        },
-        quantity: true,
+      include: {
+        product: {},
       },
     });
 
@@ -57,14 +52,17 @@ export class ItemsInCartService {
     };
   }
 
-  async findOneById(id: string): Promise<ItemsInCart> {
+  async findOneById(id: string): Promise<ItemInCartDto> {
     const item = await this.prismaService.itemsInCart.findUnique({
       where: {
         id,
       },
+      include: {
+        product: true,
+      },
     });
 
-    return item;
+    return plainToClass(ItemInCartDto, item);
   }
 
   private async findOneByUniqueCompound(
@@ -122,7 +120,7 @@ export class ItemsInCartService {
     }
 
     const input = {
-      productId: cartItem.productId,
+      productId: cartItem.product.id,
       quantity,
     };
 

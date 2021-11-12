@@ -20,17 +20,19 @@ import { UpdateProductDto } from '../dto/update-product.dto';
 import { ProductsService } from '../services/products.service';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
+import { PaginatedProduct } from '../dto/product-info.dto';
 
+@ApiTags('products')
 @Controller()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Public()
   @Get('products')
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
-  ) {
+  ): Promise<PaginatedProduct> {
     return this.productsService.find({ page, perPage });
   }
 
@@ -42,7 +44,7 @@ export class ProductsController {
 
   @Public()
   @Get('products/:id')
-  asyncgetOne(@Param('id') id: string) {
+  async getOne(@Param('id') id: string) {
     return this.productsService.findOneByIdWithImg(id);
   }
 
@@ -58,26 +60,24 @@ export class ProductsController {
     return this.productsService.delete(id);
   }
 
-  @Post('products/:productId/image')
+  @Post('products/:id/image')
   @Role(Roles.moderator)
   @UseInterceptors(FileInterceptor('file'))
   async addFile(
-    @Param('productId') id: string,
+    @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log('hit');
-
     return this.productsService.addFile(id, file.buffer, file.originalname);
   }
 
   @Role(Roles.moderator)
-  @Get('products/:productId/image')
-  async getPrivateFile(@Param('productId') productId: string) {
+  @Get('products/:id/image')
+  async getPrivateFile(@Param('id') productId: string) {
     return this.productsService.getPrivateFile(productId);
   }
 
   @Public()
-  @Get('categories/:categoryId/products')
+  @Get('categories/:id/products')
   async getAllbyCategory(
     @Param('categoryId') categoryId: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
