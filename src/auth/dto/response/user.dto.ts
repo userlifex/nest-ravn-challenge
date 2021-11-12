@@ -12,5 +12,6 @@ export class UserDto {
   @Expose()
   readonly email: string;
 
+  @Expose()
   readonly roles: Roles;
 }

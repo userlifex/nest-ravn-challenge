@@ -21,18 +21,18 @@ import { ProductsService } from '../services/products.service';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { PaginatedProduct } from '../dto/product-info.dto';
 
 @ApiTags('products')
 @Controller()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Public()
   @Get('products')
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
-  ) {
+  ): Promise<PaginatedProduct> {
     return this.productsService.find({ page, perPage });
   }
 

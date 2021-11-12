@@ -1,7 +1,7 @@
 import { ItemsInCart } from '.prisma/client';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { ItemInCartModel } from 'src/items-in-cart/dto/models/items-in-cart.model';
-import { ItemInCartDto } from 'src/items-in-cart/dto/response/item.in.cart.dto';
+import { ItemInCartModel } from '../../items-in-cart/models/items-in-cart.model';
+import { ItemInCartDto } from '../../items-in-cart/dto/response/item.in.cart.dto';
 
 @ObjectType()
 export class ShopCartModel {

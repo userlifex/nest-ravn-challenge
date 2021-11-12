@@ -1,4 +1,5 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { RestPaginatedType } from 'src/common/dtos/rest-pagination.dto';
 import { InfoCategoryDto } from '../../categories/dto/info-category.dto';
 
 @Exclude()
@@ -22,11 +23,12 @@ export class ProductInfoDto {
   @Expose()
   readonly imgUrl: string;
 
-  @Expose()
   @Transform(({ value }) => value?.toISOString())
   readonly createdAt: Date;
 
-  @Expose()
   @Transform(({ value }) => value?.toISOString())
   readonly updatedAt: Date;
 }
+
+@Exclude()
+export class PaginatedProduct extends RestPaginatedType(ProductInfoDto) {}
