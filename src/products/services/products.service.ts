@@ -7,9 +7,12 @@ import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { UsersService } from '../../users/services/users.service';
 import { paginateParams, paginationSerializer } from '../../utils';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { PaginatedProduct, ProductInfoDto } from '../dto/product-info.dto';
-import { UpdateProductDto } from '../dto/update-product.dto';
+import { CreateProductDto } from '../dtos/request/create-product.dto';
+import {
+  PaginatedProduct,
+  ProductInfoDto,
+} from '../dtos/response/product-info.dto';
+import { UpdateProductDto } from '../dtos/request/update-product.dto';
 
 @Injectable()
 export class ProductsService {

@@ -1,10 +1,17 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
+import { IsInt, IsOptional, IsPositive } from 'class-validator';
 
 @ArgsType()
-class PaginationArgs {
+export class PaginationArgs {
   @Field(() => Int, { defaultValue: 1 })
-  offset: number;
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  readonly page: number;
 
   @Field(() => Int, { defaultValue: 10 })
-  limit: number;
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  readonly perPage: number;
 }

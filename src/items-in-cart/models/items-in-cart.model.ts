@@ -1,7 +1,7 @@
 import { Product } from '.prisma/client';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { GqlPaginatedType } from 'src/common/dtos/gql-pagination.model';
-import { ProductModel } from 'src/products/dto/models/product.model';
+import { ProductModel } from 'src/products/dtos/models/product.model';
 
 @ObjectType()
 export class ItemInCartModel {

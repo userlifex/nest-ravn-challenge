@@ -54,6 +54,35 @@ describe('ProductsService', () => {
     expect(searchedProduct.id).toEqual(product.id);
   });
 
+  it('hasAttachment', async () => {
+    const product = await prismaService.product.create({
+      data: {
+        name: 'water',
+        price: 12,
+        stock: 10,
+      },
+    });
+
+    const hasAttachment = await productsService.hasAttachment(product.id);
+    expect(hasAttachment).toBeFalsy();
+  });
+
+  it('hasAttachment', async () => {
+    const product = await prismaService.product.create({
+      data: {
+        name: 'water',
+        price: 12,
+        stock: 10,
+        attachment: {
+          create: { key: 's', url: '' },
+        },
+      },
+    });
+
+    const hasAttachment = await productsService.hasAttachment(product.id);
+    expect(hasAttachment).toBeTruthy();
+  });
+
   it('should validate stock when is less than stock', async () => {
     const product = await prismaService.product.create({
       data: {
@@ -82,6 +111,23 @@ describe('ProductsService', () => {
     expect(isValid).toBeFalsy();
   });
 
+  it('should update a product', async () => {
+    const product = await prismaService.product.create({
+      data: {
+        name: 'product',
+        stock: 12,
+        price: 10,
+      },
+    });
+
+    const productUpdate = await productsService.update(product.id, {
+      name: 'new',
+    });
+
+    expect(productUpdate).toHaveProperty('id');
+    expect(productUpdate.name).toBe('new');
+  });
+
   it('should create a product', async () => {
     const product = await productsService.create({
       name: 'product',
@@ -107,5 +153,37 @@ describe('ProductsService', () => {
     });
 
     expect(searchedProduct).toBeNull();
+  });
+
+  it('should get many products', async () => {
+    const countProducts = await prismaService.product.createMany({
+      data: [
+        {
+          name: '1',
+          price: 12,
+          stock: 10,
+        },
+        {
+          name: '2',
+          price: 12,
+          stock: 10,
+        },
+        {
+          name: '3',
+          price: 12,
+          stock: 10,
+        },
+        {
+          name: '4',
+          price: 12,
+          stock: 10,
+        },
+      ],
+    });
+
+    const products = await productsService.find({ page: 1, perPage: 4 });
+
+    expect(products).toHaveProperty('data');
+    expect(products).toHaveProperty('pageInfo');
   });
 });

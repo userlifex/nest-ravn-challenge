@@ -1,0 +1,154 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CategoryModel {
+  createdAt: String!
+  id: String!
+  name: String!
+  updatedAt: String!
+}
+
+input CreateCategoryInput {
+  name: String!
+}
+
+input CreateProductInput {
+  categoryId: String
+  description: String
+  imageUrl: String
+  name: String!
+  numLikes: Int = 0
+  price: Float!
+  stock: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type InfoPaginationModel {
+  nextPage: Int
+  page: Int
+  perPage: Int
+  prevPage: Int
+  total: Int
+  totalPages: Int
+}
+
+type ItemInCartModel {
+  id: String!
+  product: ProductModel!
+  quantity: Int!
+}
+
+input LogInInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  addProductToCart(productId: String!, quantity: Float!): ItemInCartModel!
+  changePassword(password: String!, token: String!): PasswordRecoverModel!
+  createCategory(input: CreateCategoryInput!): CategoryModel!
+  createProduct(input: CreateProductInput!): ProductModel!
+  delete(id: String!): ItemInCartModel!
+  deleteCategory(id: String!): CategoryModel!
+  logIn(data: LogInInput!): TokenModel!
+  recoverPassword(email: String!): PasswordRecoverModel!
+  signUp(data: SignUpInput!): UserModel!
+  update(id: String!, quantity: Float!): ItemInCartModel!
+  updateCategory(id: String!, input: UpdateCategoryInput!): CategoryModel!
+  updateProduct(id: String!, input: UpdateProductInput!): ProductModel!
+}
+
+type PaginatedCategories {
+  data: [CategoryModel!]
+  pageInfo: InfoPaginationModel
+}
+
+type PaginatedItemsInCart {
+  data: [ItemInCartModel!]
+  pageInfo: InfoPaginationModel
+}
+
+type PaginatedProducts {
+  data: [ProductModel!]
+  pageInfo: InfoPaginationModel
+}
+
+input PaginationInput {
+  page: Int = 1
+  perPage: Int = 10
+}
+
+type PasswordRecoverModel {
+  message: String!
+}
+
+type ProductModel {
+  category: CategoryModel
+  createdAt: String!
+  id: String!
+  imgUrl: String
+  name: String!
+  price: Float!
+  stock: Int!
+  updatedAt: String!
+}
+
+type Query {
+  findMyShopCart: ShopCartModel!
+  getAProfile(userId: String!): UserModel!
+  getAll(pagination: PaginationInput!): PaginatedItemsInCart!
+  getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
+  getAllProducts(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+  getMyProfile: UserProfileModel!
+  getOneById(itemId: String!): ItemInCartModel!
+  getOneCategory(id: String!): CategoryModel!
+  getProductsByCategory(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+}
+
+type ShopCartModel {
+  id: String!
+  itemsInCart: [ItemInCartModel!]!
+}
+
+input SignUpInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+type TokenModel {
+  access_token: String!
+}
+
+input UpdateCategoryInput {
+  name: String
+}
+
+input UpdateProductInput {
+  categoryId: String
+  description: String
+  imageUrl: String
+  name: String
+  numLikes: Int = 0
+  price: Float
+  stock: Int
+}
+
+type UserModel {
+  email: String!
+  id: String!
+  name: String!
+}
+
+type UserProfileModel {
+  createdAt: DateTime!
+  email: String!
+  id: String!
+  name: String!
+  shopCart: ShopCartModel!
+}

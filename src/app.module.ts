@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { CategoriesModule } from './categories/categories.module';
@@ -17,15 +17,13 @@ import { TokensModule } from './tokens/tokens.module';
 import { UsersModule } from './users/users.module';
 import { AttachmentModule } from './attachment/attachment.module';
 import { LikesModule } from './likes/likes.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
-    ProductsModule,
     CategoriesModule,
+    ProductsModule,
     UsersModule,
     OrdersModule,
     ItemsInCartModule,
@@ -46,9 +44,8 @@ import { join } from 'path';
       }),
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     // {
     //   provide: APP_GUARD,
     //   useClass: JwtAuthGuard,
