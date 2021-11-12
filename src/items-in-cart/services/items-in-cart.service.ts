@@ -52,14 +52,17 @@ export class ItemsInCartService {
     };
   }
 
-  async findOneById(id: string): Promise<ItemsInCart> {
+  async findOneById(id: string): Promise<ItemInCartDto> {
     const item = await this.prismaService.itemsInCart.findUnique({
       where: {
         id,
       },
+      include: {
+        product: true,
+      },
     });
 
-    return item;
+    return plainToClass(ItemInCartDto, item);
   }
 
   private async findOneByUniqueCompound(
@@ -117,7 +120,7 @@ export class ItemsInCartService {
     }
 
     const input = {
-      productId: cartItem.productId,
+      productId: cartItem.product.id,
       quantity,
     };
 

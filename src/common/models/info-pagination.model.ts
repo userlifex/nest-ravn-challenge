@@ -1,5 +1,4 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { IsInt } from 'class-validator';
 
 @ObjectType()
 export class InfoPaginationModel {
@@ -12,10 +11,10 @@ export class InfoPaginationModel {
   @Field(() => Int)
   readonly page: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly prevPage: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly nextPage: number;
 
   @Field(() => Int)

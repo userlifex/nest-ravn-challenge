@@ -7,7 +7,7 @@ export class ShopCartDto {
   @Expose()
   id: string;
 
-  @Expose({ name: 'itemsInCart' })
+  @Expose()
   @Type(() => ItemInCartDto)
-  items: ItemsInCart[];
+  itemsInCart: ItemsInCart[];
 }

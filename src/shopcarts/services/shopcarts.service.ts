@@ -23,7 +23,6 @@ export class ShopcartsService {
                 id: true,
                 name: true,
                 price: true,
-                description: true,
               },
             },
           },

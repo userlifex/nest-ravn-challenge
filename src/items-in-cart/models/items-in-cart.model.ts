@@ -1,5 +1,5 @@
 import { Product } from '.prisma/client';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { GqlPaginatedType } from 'src/common/dtos/gql-pagination.model';
 import { ProductModel } from 'src/products/dto/models/product.model';
 
@@ -8,7 +8,7 @@ export class ItemInCartModel {
   @Field()
   readonly id: string;
 
-  @Field()
+  @Field(() => Int)
   readonly quantity: number;
 
   @Field(() => ProductModel)
