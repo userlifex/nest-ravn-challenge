@@ -40,7 +40,7 @@ type InfoPaginationModel {
 type ItemInCartModel {
   id: String!
   product: ProductModel!
-  quantity: Float!
+  quantity: Int!
 }
 
 input LogInInput {
@@ -100,6 +100,7 @@ type ProductModel {
 }
 
 type Query {
+  findMyShopCart: ShopCartModel!
   getAProfile(userId: String!): UserModel!
   getAll(pagination: PaginationInput!): PaginatedItemsInCart!
   getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
@@ -113,7 +114,7 @@ type Query {
 
 type ShopCartModel {
   id: String!
-  items: ItemInCartModel!
+  itemsInCart: [ItemInCartModel!]!
 }
 
 input SignUpInput {

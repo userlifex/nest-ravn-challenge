@@ -11,7 +11,7 @@ export class ShopCartResolver {
   constructor(private shopcartService: ShopcartsService) {}
 
   @UseGuards(GqlJwtAuthGuard)
-  @Query(() => ShopCartModel, { name: 'shopcart' })
+  @Query(() => ShopCartModel)
   async findMyShopCart(
     @CurrentUser() user: UserEntity,
   ): Promise<ShopCartModel> {

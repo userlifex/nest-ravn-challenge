@@ -52,7 +52,7 @@ export class ItemsInCartController {
   }
 
   @Get('users/me/shopcart/items-in-cart/:id')
-  async getOneById(@Param('id') cartItemId: string): Promise<ItemsInCart> {
+  async getOneById(@Param('id') cartItemId: string): Promise<ItemInCartDto> {
     return this.itemsInCartService.findOneById(cartItemId);
   }
 

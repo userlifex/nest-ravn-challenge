@@ -43,7 +43,7 @@ export class ItemsInCartResolver {
   }
 
   @Query(() => ItemInCartModel)
-  async getOneById(@Args('itemId') itemId: string) {
+  async getOneById(@Args('itemId') itemId: string): Promise<ItemInCartModel> {
     return this.itemsInCartService.findOneById(itemId);
   }
 
