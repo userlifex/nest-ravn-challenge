@@ -3,21 +3,21 @@ import { IsInt } from 'class-validator';
 
 @ObjectType()
 export class InfoPaginationModel {
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly perPage: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly total: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly page: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly prevPage: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly nextPage: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   readonly totalPages: number;
 }

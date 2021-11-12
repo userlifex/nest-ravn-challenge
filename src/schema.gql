@@ -9,6 +9,111 @@ type CategoryModel {
   updatedAt: String!
 }
 
+input CreateCategoryInput {
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type InfoPaginationModel {
+  nextPage: Int
+  page: Int
+  perPage: Int
+  prevPage: Int
+  total: Int
+  totalPages: Int
+}
+
+type ItemInCartModel {
+  id: String!
+  product: ProductModel!
+  quantity: Float!
+}
+
+input LogInInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  addProductToCart(productId: String!, quantity: Float!): ItemInCartModel!
+  changePassword(password: String!, token: String!): PasswordRecoverModel!
+  createCategory(input: CreateCategoryInput!): CategoryModel!
+  de(id: String!, input: UpdateCategoryInput!): CategoryModel!
+  delete(id: String!): ItemInCartModel!
+  deleteCategory(id: String!): CategoryModel!
+  logIn(data: LogInInput!): TokenModel!
+  recoverPassword(email: String!): PasswordRecoverModel!
+  signUp(data: SignUpInput!): UserModel!
+  update(id: String!, quantity: Float!): ItemInCartModel!
+}
+
+type PaginatedCategories {
+  data: [CategoryModel!]
+  pageInfo: InfoPaginationModel
+}
+
+type PaginatedItemsInCart {
+  data: [ItemInCartModel!]
+  pageInfo: InfoPaginationModel
+}
+
+input PaginationInput {
+  page: Int = 1
+  perPage: Int = 10
+}
+
+type PasswordRecoverModel {
+  message: String!
+}
+
+type ProductModel {
+  id: String!
+  name: String!
+}
+
 type Query {
-  categories(page: Int!, perPage: Int!): [CategoryModel!]!
+  getAProfile(userId: String!): UserModel!
+  getAll(pagination: PaginationInput!): PaginatedItemsInCart!
+  getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
+  getMyProfile: UserProfileModel!
+  getOneById(itemId: String!): ItemInCartModel!
+  getOneCategory(id: String!): CategoryModel!
+  shopcart: ShopCartModel!
+}
+
+type ShopCartModel {
+  id: String!
+  items: ItemInCartModel!
+}
+
+input SignUpInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+type TokenModel {
+  access_token: String!
+}
+
+input UpdateCategoryInput {
+  name: String!
+}
+
+type UserModel {
+  email: String!
+  id: String!
+  name: String!
+}
+
+type UserProfileModel {
+  createdAt: DateTime!
+  email: String!
+  id: String!
+  name: String!
+  shopCart: ShopCartModel!
 }

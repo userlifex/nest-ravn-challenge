@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { GqlPaginatedType } from 'src/common/dtos/gql-pagination.model';
 
 @ObjectType()
 export class CategoryModel {
@@ -14,3 +15,6 @@ export class CategoryModel {
   @Field()
   updatedAt: string;
 }
+
+@ObjectType()
+export class PaginatedCategories extends GqlPaginatedType(CategoryModel) {}
