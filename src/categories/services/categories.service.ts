@@ -6,7 +6,7 @@ import {
 import { Category } from '@prisma/client';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
-import { paginateParams, paginationSerializer } from '../../utils';
+import { RESTpaginateParams, RESTpaginationSerializer } from '../../utils';
 import { CreateCategoryDto } from '../dtos/request/create-category.dto';
 import { UpdateCategoryDto } from '../dtos/request/update-category.dto';
 
@@ -34,11 +34,11 @@ export class CategoriesService {
   }
 
   async find({ page, perPage }: InputPaginationDto) {
-    const prismaPagination = paginateParams({ page, perPage });
+    const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.category.count({});
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.category.findMany({
       ...prismaPagination,

@@ -24,18 +24,31 @@ export class CursorPagination extends ICursorPagination {
 }
 
 export interface IEdgeType<T> {
-  cursor: string;
   node: T;
+  cursor: string;
+}
+
+export interface IPageInfo {
+  startCursor: string;
+  endCursor: string;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
 
 export interface IPaginatedResponse<T> {
   edges: IEdgeType<T>[];
-  nodes: T[];
-  totalCount: number;
-  hasNextPage: boolean;
+  pageInfo: IPageInfo;
 }
 
-export function Paginated<T>(classRef: Type<T>): Type<IPaginatedResponse<T>> {
+export function getEdges<T extends { id?: string }>(
+  nodes: Array<T>,
+): Array<IEdgeType<T>> {
+  return nodes.map((node) => ({ node, cursor: node.id }));
+}
+
+export function CursorPaginated<T>(
+  classRef: Type<T>,
+): Type<IPaginatedResponse<T>> {
   @ObjectType(`${classRef.name}Edge`)
   abstract class EdgeType {
     @Field(() => String)
@@ -45,19 +58,28 @@ export function Paginated<T>(classRef: Type<T>): Type<IPaginatedResponse<T>> {
     node: T;
   }
 
+  @ObjectType(`${classRef.name}PageInfo`)
+  abstract class PageInfo {
+    @Field(() => String, { nullable: true })
+    public startCursor: string;
+
+    @Field(() => String, { nullable: true })
+    public endCursor: string;
+
+    @Field(() => Boolean)
+    public hasPreviousPage: boolean;
+
+    @Field(() => Boolean)
+    public hasNextPage: boolean;
+  }
+
   @ObjectType({ isAbstract: true })
   abstract class PaginatedType implements IPaginatedResponse<T> {
     @Field(() => [EdgeType], { nullable: true })
     edges: EdgeType[];
 
-    @Field(() => [classRef], { nullable: true })
-    nodes: T[];
-
-    @Field(() => Int)
-    totalCount: number;
-
-    @Field()
-    hasNextPage: boolean;
+    @Field(() => PageInfo, { nullable: true })
+    pageInfo: PageInfo;
   }
 
   return PaginatedType as Type<IPaginatedResponse<T>>;

@@ -23,6 +23,11 @@ input CreateProductInput {
   stock: Int!
 }
 
+type CursorPaginatedItemsInCart {
+  edges: [ItemInCartModelEdge!]
+  pageInfo: ItemInCartModelPageInfo
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -41,6 +46,18 @@ type ItemInCartModel {
   id: String!
   product: ProductModel!
   quantity: Int!
+}
+
+type ItemInCartModelEdge {
+  cursor: String!
+  node: ItemInCartModel!
+}
+
+type ItemInCartModelPageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
 }
 
 input LogInInput {
@@ -68,19 +85,9 @@ type PaginatedCategories {
   pageInfo: InfoPaginationModel
 }
 
-type PaginatedItemsInCart {
-  data: [ItemInCartModel!]
-  pageInfo: InfoPaginationModel
-}
-
 type PaginatedProducts {
   data: [ProductModel!]
   pageInfo: InfoPaginationModel
-}
-
-input PaginationInput {
-  page: Int = 1
-  perPage: Int = 10
 }
 
 type PasswordRecoverModel {
@@ -101,7 +108,7 @@ type ProductModel {
 type Query {
   findMyShopCart: ShopCartModel!
   getAProfile(userId: String!): UserModel!
-  getAll(pagination: PaginationInput!): PaginatedItemsInCart!
+  getAll(after: String, first: Int = 10): CursorPaginatedItemsInCart!
   getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
   getAllProducts(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
   getMyProfile: UserProfileModel!

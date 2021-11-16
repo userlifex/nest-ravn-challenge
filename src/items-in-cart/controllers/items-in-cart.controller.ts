@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiLayer } from 'src/utils';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Role } from '../../common/decorators/role.decorator';
 import { UserEntity } from '../../common/types';
@@ -48,7 +49,11 @@ export class ItemsInCartController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
   ) {
-    return this.itemsInCartService.find(user.id, { page, perPage });
+    return this.itemsInCartService.find(
+      user.id,
+      { page, perPage },
+      ApiLayer.REST,
+    );
   }
 
   @Get('users/me/shopcart/items-in-cart/:id')

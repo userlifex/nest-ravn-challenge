@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
-import { paginateParams, paginationSerializer } from '../../utils';
+import { RESTpaginateParams, RESTpaginationSerializer } from '../../utils';
 import { UsersService } from '../../users/services/users.service';
 import { ProductsService } from '../../products/services/products.service';
 import { ItemsInCartService } from '../../items-in-cart/services/items-in-cart.service';
@@ -22,11 +22,11 @@ export class OrdersService {
   ) {}
 
   async find({ page, perPage }: InputPaginationDto) {
-    const prismaPagination = paginateParams({ page, perPage });
+    const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.order.count({});
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.order.findMany({
       ...prismaPagination,
@@ -42,11 +42,11 @@ export class OrdersService {
   }
 
   async findByUserId(userId: string, { page, perPage }: InputPaginationDto) {
-    const prismaPagination = paginateParams({ page, perPage });
+    const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.order.count({ where: { userId } });
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.order.findMany({
       where: { userId },
