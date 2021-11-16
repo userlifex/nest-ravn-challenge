@@ -5,24 +5,30 @@ import { ProductArgs } from '../dtos/args/product.args';
 import { CreateProductDto } from '../dtos/request/create-product.dto';
 import { CreateProductInput } from '../dtos/inputs/create-product.input';
 import { UpdateProductInput } from '../dtos/inputs/update-product.input';
-import { PaginatedProducts, ProductModel } from '../dtos/models/product.model';
+import {
+  CursorPaginatedProducts,
+  PaginatedProducts,
+  ProductModel,
+} from '../dtos/models/product.model';
 import { UpdateProductDto } from '../dtos/request/update-product.dto';
 import { ProductsService } from '../services/products.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlJwtAuthGuard } from 'src/auth/guards/gql-jwt.guard';
-import { RolesGuard } from 'src/common/guards/role.guard';
-import { Role } from 'src/common/decorators/role.decorator';
+import { RolesGuard } from '../../common/guards/role.guard';
+import { Role } from '../../common/decorators/role.decorator';
 import { Roles } from '@prisma/client';
+import { CursorPagination } from '../../common/dtos/args/cursor-pagination.args';
+import { ApiLayer } from 'src/utils';
 
 @Resolver(() => ProductModel)
 export class ProductResolver {
   constructor(private productsService: ProductsService) {}
 
   @Public()
-  @Query(() => PaginatedProducts)
-  async getAllProducts(@Args() args: ProductArgs) {
-    const { page, perPage } = args;
-    const productsRsp = await this.productsService.find({ page, perPage });
+  @Query(() => CursorPaginatedProducts)
+  async getAllProducts(@Args() args: CursorPagination) {
+    const productsRsp = await this.productsService.find(args, ApiLayer.GQL);
+
     return productsRsp;
   }
 

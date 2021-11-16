@@ -9,6 +9,18 @@ type CategoryModel {
   updatedAt: String!
 }
 
+type CategoryModelEdge {
+  cursor: String!
+  node: CategoryModel!
+}
+
+type CategoryModelPageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
 input CreateCategoryInput {
   name: String!
 }
@@ -23,9 +35,19 @@ input CreateProductInput {
   stock: Int!
 }
 
+type CursorPaginatedCategories {
+  edges: [CategoryModelEdge!]
+  pageInfo: CategoryModelPageInfo
+}
+
 type CursorPaginatedItemsInCart {
   edges: [ItemInCartModelEdge!]
   pageInfo: ItemInCartModelPageInfo
+}
+
+type CursorPaginatedProducts {
+  edges: [ProductModelEdge!]
+  pageInfo: ProductModelPageInfo
 }
 
 """
@@ -90,11 +112,6 @@ type Mutation {
   updateProduct(id: String!, input: UpdateProductInput!): ProductModel!
 }
 
-type PaginatedCategories {
-  data: [CategoryModel!]
-  pageInfo: InfoPaginationModel
-}
-
 type PaginatedProducts {
   data: [ProductModel!]
   pageInfo: InfoPaginationModel
@@ -115,12 +132,24 @@ type ProductModel {
   updatedAt: String!
 }
 
+type ProductModelEdge {
+  cursor: String!
+  node: ProductModel!
+}
+
+type ProductModelPageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
 type Query {
   findMyShopCart: ShopCartModel!
   getAProfile(userId: String!): UserModel!
   getAll(after: String, first: Int = 10): CursorPaginatedItemsInCart!
-  getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
-  getAllProducts(categoryId: String = "", id: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+  getAllCategories(after: String, first: Int = 10): CursorPaginatedCategories!
+  getAllProducts(after: String, first: Int = 10): CursorPaginatedProducts!
   getMyProfile: UserProfileModel!
   getOneById(itemId: String!): ItemInCartModel!
   getOneCategory(id: String!): CategoryModel!

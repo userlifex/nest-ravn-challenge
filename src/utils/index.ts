@@ -80,3 +80,22 @@ export function GQLpaginationSerializer<T extends { id: string }>(
     hasNextPage,
   };
 }
+
+export function GQLPageSerializer<T extends { id: string }>(
+  firstCursor: string,
+  lastCursor: string,
+  edge: Array<T>,
+) {
+  const startCursor = edge[0].id;
+  const endCursor = edge[edge.length - 1].id;
+
+  const hasPreviousPage = firstCursor !== startCursor ? true : false;
+  const hasNextPage = lastCursor !== endCursor ? true : false;
+
+  return {
+    startCursor,
+    endCursor,
+    hasPreviousPage,
+    hasNextPage,
+  };
+}

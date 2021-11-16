@@ -6,13 +6,21 @@ import { CategoriesService } from '../../categories/services/categories.service'
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { UsersService } from '../../users/services/users.service';
-import { RESTpaginateParams, RESTpaginationSerializer } from '../../utils';
+import {
+  ApiLayer,
+  GQLPageSerializer,
+  GQLpaginateParams,
+  RESTpaginateParams,
+  RESTpaginationSerializer,
+} from '../../utils';
 import { CreateProductDto } from '../dtos/request/create-product.dto';
 import {
   PaginatedProduct,
   ProductInfoDto,
 } from '../dtos/response/product-info.dto';
 import { UpdateProductDto } from '../dtos/request/update-product.dto';
+import { getEdges } from 'src/common/dtos/args/cursor-pagination.args';
+import { ProductModel } from '../dtos/models/product.model';
 
 @Injectable()
 export class ProductsService {
@@ -88,14 +96,11 @@ export class ProductsService {
     });
   }
 
-  async find({ page, perPage }: InputPaginationDto): Promise<PaginatedProduct> {
-    const prismaPagination = RESTpaginateParams({ page, perPage });
-
-    const total = await this.prismaService.product.count({});
-
-    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
-
-    const data = [];
+  async findGQL({ first, after }: InputPaginationDto) {
+    const prismaPagination = GQLpaginateParams({ first, after });
+    const { firstCursor, lastCursor } = await this.prismaService.getBounds(
+      'product',
+    );
 
     const products = await this.prismaService.product.findMany({
       ...prismaPagination,
@@ -105,15 +110,59 @@ export class ProductsService {
       },
     });
 
-    for (const product of products) {
-      const productWithImage = await this.getProductWithImg(product);
-      data.push(productWithImage);
-    }
+    const data = await this.addImgUrlToProduct(products);
+
+    const edges = getEdges<ProductModel>(data);
+    const pageInfo = GQLPageSerializer<Product>(firstCursor, lastCursor, data);
+
+    return {
+      edges,
+      pageInfo,
+    };
+  }
+
+  async findRest({ page, perPage }: InputPaginationDto) {
+    const prismaPagination = RESTpaginateParams({ page, perPage });
+
+    const total = await this.prismaService.product.count({});
+
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
+
+    const products = await this.prismaService.product.findMany({
+      ...prismaPagination,
+      include: {
+        attachment: true,
+        category: true,
+      },
+    });
+
+    const data = await this.addImgUrlToProduct(products);
 
     return {
       pageInfo,
       data: plainToClass(ProductInfoDto, data),
     };
+  }
+
+  async addImgUrlToProduct(products) {
+    const data = [];
+    for (const product of products) {
+      const productWithImage = await this.getProductWithImg(product);
+      data.push(productWithImage);
+    }
+
+    return data;
+  }
+
+  async find(
+    pagination: InputPaginationDto,
+    layer = ApiLayer.REST,
+  ): Promise<PaginatedProduct | any> {
+    if (layer === ApiLayer.REST) {
+      return await this.findRest(pagination);
+    }
+
+    return await this.findGQL(pagination);
   }
 
   async getProductWithImg(product) {
@@ -123,17 +172,9 @@ export class ProductsService {
       imgUrl = attachment.url;
     }
 
-    const { id, name, stock, price, createdAt, updatedAt, category } = product;
-
     return {
-      id,
-      name,
-      stock,
-      price,
       imgUrl,
-      category,
-      updatedAt,
-      createdAt,
+      ...product,
     };
   }
 
