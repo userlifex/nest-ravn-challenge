@@ -4,11 +4,24 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Category } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
+import { getEdges } from 'src/common/dtos/args/cursor-pagination.args';
 import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
-import { RESTpaginateParams, RESTpaginationSerializer } from '../../utils';
+import {
+  ApiLayer,
+  GQLpaginateParams,
+  GQLPageSerializer,
+  RESTpaginateParams,
+  RESTpaginationSerializer,
+} from '../../utils';
+import {
+  CategoryModel,
+  CursorPaginatedCategories,
+} from '../dtos/models/category.model';
 import { CreateCategoryDto } from '../dtos/request/create-category.dto';
 import { UpdateCategoryDto } from '../dtos/request/update-category.dto';
+import { InfoCategoryDto } from '../dtos/response/info-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -33,7 +46,7 @@ export class CategoriesService {
     });
   }
 
-  async find({ page, perPage }: InputPaginationDto) {
+  private async findRest({ page, perPage }: InputPaginationDto) {
     const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.category.count({});
@@ -48,6 +61,37 @@ export class CategoriesService {
       pageInfo,
       data,
     };
+  }
+
+  private async findGQL({
+    first,
+    after,
+  }: InputPaginationDto): Promise<CursorPaginatedCategories> {
+    const prismaPagination = GQLpaginateParams({ first, after });
+
+    const { firstCursor, lastCursor } = await this.prismaService.getBounds(
+      'category',
+    );
+
+    const data = await this.prismaService.category.findMany({
+      ...prismaPagination,
+    });
+
+    const edges = getEdges(plainToClass(CategoryModel, data));
+    const pageInfo = GQLPageSerializer<Category>(firstCursor, lastCursor, data);
+
+    return {
+      edges,
+      pageInfo,
+    };
+  }
+
+  async find(pagination: InputPaginationDto, layer = ApiLayer.REST) {
+    if (layer === ApiLayer.GQL) {
+      return this.findGQL(pagination);
+    }
+
+    return this.findRest(pagination);
   }
 
   async findOneById(id: string): Promise<Category> {

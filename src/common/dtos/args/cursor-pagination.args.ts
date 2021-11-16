@@ -1,9 +1,15 @@
 import { Type } from '@nestjs/common';
 import { ArgsType, Field, Int, ObjectType } from '@nestjs/graphql';
-import { IsNotEmpty, IsNumber, IsOptional, IsPositive } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class ICursorPagination {
-  take?: number;
+  first?: number;
   after?: string;
 }
 
@@ -13,11 +19,10 @@ export class CursorPagination extends ICursorPagination {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  take?: number;
+  first?: number;
 
-  @Field(() => Int, { nullable: true })
-  @IsNumber()
-  @IsPositive()
+  @Field({ nullable: true, defaultValue: undefined })
+  @IsString()
   @IsOptional()
   @IsNotEmpty()
   after?: string;
