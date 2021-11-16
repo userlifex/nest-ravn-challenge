@@ -43,6 +43,14 @@ type ItemInCartModel {
   quantity: Int!
 }
 
+type LikeModel {
+  createdAt: String!
+  id: String!
+  productId: String!
+  updatedAt: String!
+  userId: String!
+}
+
 input LogInInput {
   email: String!
   password: String!
@@ -56,6 +64,7 @@ type Mutation {
   delete(id: String!): ItemInCartModel!
   deleteCategory(id: String!): CategoryModel!
   deleteProduct(id: String!): ProductModel!
+  likeProduct(productId: String!): LikeModel!
   logIn(data: LogInInput!): TokenModel!
   recoverPassword(email: String!): PasswordRecoverModel!
   signUp(data: SignUpInput!): UserModel!
@@ -109,7 +118,6 @@ type Query {
   getOneById(itemId: String!): ItemInCartModel!
   getOneCategory(id: String!): CategoryModel!
   getProductsByCategory(categoryId: String = "", id: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
-  shopcart: ShopCartModel!
 }
 
 type ShopCartModel {
@@ -132,7 +140,6 @@ input UpdateCategoryInput {
 }
 
 input UpdateProductInput {
-  categoryId: String
   description: String
   imageUrl: String
   name: String
