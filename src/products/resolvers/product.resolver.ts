@@ -62,7 +62,8 @@ export class ProductResolver {
     return plainToClass(ProductModel, productRsp);
   }
 
-  @Public()
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Role(Roles.moderator)
   @Mutation(() => ProductModel)
   async deleteProduct(@Args('id') id: string): Promise<ProductModel> {
     const product = await this.productsService.delete(id);
