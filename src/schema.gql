@@ -48,6 +48,7 @@ type ItemInCartModel {
   quantity: Int!
 }
 
+
 type ItemInCartModelEdge {
   cursor: String!
   node: ItemInCartModel!
@@ -58,6 +59,13 @@ type ItemInCartModelPageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
   startCursor: String
+
+type LikeModel {
+  createdAt: String!
+  id: String!
+  productId: String!
+  updatedAt: String!
+  userId: String!
 }
 
 input LogInInput {
@@ -72,6 +80,8 @@ type Mutation {
   createProduct(input: CreateProductInput!): ProductModel!
   delete(id: String!): ItemInCartModel!
   deleteCategory(id: String!): CategoryModel!
+  deleteProduct(id: String!): ProductModel!
+  likeProduct(productId: String!): LikeModel!
   logIn(data: LogInInput!): TokenModel!
   recoverPassword(email: String!): PasswordRecoverModel!
   signUp(data: SignUpInput!): UserModel!
@@ -110,11 +120,11 @@ type Query {
   getAProfile(userId: String!): UserModel!
   getAll(after: String, first: Int = 10): CursorPaginatedItemsInCart!
   getAllCategories(page: Int = 1, perPage: Int = 10): PaginatedCategories!
-  getAllProducts(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+  getAllProducts(categoryId: String = "", id: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
   getMyProfile: UserProfileModel!
   getOneById(itemId: String!): ItemInCartModel!
   getOneCategory(id: String!): CategoryModel!
-  getProductsByCategory(categoryId: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
+  getProductsByCategory(categoryId: String = "", id: String = "", page: Int = 1, perPage: Int = 10): PaginatedProducts!
 }
 
 type ShopCartModel {
@@ -137,7 +147,6 @@ input UpdateCategoryInput {
 }
 
 input UpdateProductInput {
-  categoryId: String
   description: String
   imageUrl: String
   name: String
