@@ -6,7 +6,7 @@ import { CategoriesService } from '../../categories/services/categories.service'
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { UsersService } from '../../users/services/users.service';
-import { paginateParams, paginationSerializer } from '../../utils';
+import { RESTpaginateParams, RESTpaginationSerializer } from '../../utils';
 import { CreateProductDto } from '../dtos/request/create-product.dto';
 import {
   PaginatedProduct,
@@ -89,11 +89,11 @@ export class ProductsService {
   }
 
   async find({ page, perPage }: InputPaginationDto): Promise<PaginatedProduct> {
-    const prismaPagination = paginateParams({ page, perPage });
+    const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.product.count({});
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
 
     const data = [];
 
@@ -192,13 +192,13 @@ export class ProductsService {
   ) {
     await this.categoriesService.findOneById(categoryId);
 
-    const prismaPagination = paginateParams({ page, perPage });
+    const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.product.count({
       where: { categoryId },
     });
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.product.findMany({
       ...prismaPagination,

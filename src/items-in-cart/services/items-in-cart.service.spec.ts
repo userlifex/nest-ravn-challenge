@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { CreateProductDto } from '../../products/dtos/request/create-product.dto';
 import { AuthModule } from '../../auth/auth.module';
 import { AuthService } from '../../auth/services/auth.service';
 import { jwtConfigMock, jwtMockService } from '../../common/mocks/default.mock';
@@ -68,10 +68,14 @@ describe('ItemsInCartService', () => {
       password: '123456',
     };
     const userRegistered = await authService.signup(user);
-    const cartItems = await itemsInCartService.find(userRegistered.id, {
-      page: 1,
-      perPage: 10,
-    });
+    const cartItems = await itemsInCartService.find(
+      userRegistered.id,
+      {
+        page: 1,
+        perPage: 10,
+      },
+      utils.ApiLayer.REST,
+    );
     const spy = jest.spyOn(utils, 'paginateParams');
 
     const paginate = utils.paginateParams({ page: 1, perPage: 10 });

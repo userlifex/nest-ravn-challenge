@@ -1,13 +1,16 @@
 import { Roles } from '.prisma/client';
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { GqlJwtAuthGuard } from 'src/auth/guards/gql-jwt.guard';
 import { Role } from 'src/common/decorators/role.decorator';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { UserEntity } from 'src/common/types';
+import { ApiLayer } from 'src/utils';
 import { PaginationInput } from '../dto/pagination.input';
 import {
+  CursorPaginatedItemsInCart,
   ItemInCartModel,
   PaginatedItemsInCart,
 } from '../models/items-in-cart.model';
@@ -34,12 +37,18 @@ export class ItemsInCartResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard)
-  @Query(() => PaginatedItemsInCart)
+  @Query(() => CursorPaginatedItemsInCart)
   async getAll(
-    @CurrentUser() user,
-    @Args('pagination') pagination: PaginationInput,
-  ): Promise<PaginatedItemsInCart> {
-    return this.itemsInCartService.find(user.id, pagination);
+    @CurrentUser() user: UserEntity,
+    @Args({ name: 'first', type: () => Int, nullable: true, defaultValue: 10 })
+    first?: number,
+    @Args({ name: 'after', nullable: true }) after?: string,
+  ): Promise<CursorPaginatedItemsInCart | PaginatedItemsInCart> {
+    return this.itemsInCartService.find(
+      user.id,
+      { first, after },
+      ApiLayer.GQL,
+    );
   }
 
   @Query(() => ItemInCartModel)

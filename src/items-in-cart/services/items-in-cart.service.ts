@@ -1,16 +1,25 @@
 import { ItemsInCart } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import { elementAt } from 'rxjs';
+import { getEdges } from 'src/common/dtos/args/cursor-pagination.args';
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { ProductsService } from '../../products/services/products.service';
 import { ShopcartsService } from '../../shopcarts/services/shopcarts.service';
-import { paginateParams, paginationSerializer } from '../../utils';
+import {
+  ApiLayer,
+  RESTpaginateParams,
+  RESTpaginationSerializer,
+  GQLpaginateParams,
+  GQLpaginationSerializer,
+} from '../../utils';
 import { CreateItemInCartDto } from '../dto/request/create.item.in.cart.dto';
 import {
   ItemInCartDto,
   PaginatedItemInCart,
 } from '../dto/response/item.in.cart.dto';
+import { CursorPaginatedItemsInCart } from '../models/items-in-cart.model';
 
 @Injectable()
 export class ItemsInCartService {
@@ -22,34 +31,66 @@ export class ItemsInCartService {
 
   async find(
     userId: string,
-    { page, perPage }: InputPaginationDto,
-  ): Promise<PaginatedItemInCart> {
-    const prismaPagination = paginateParams({ page, perPage });
-
+    { first, after, page, perPage }: InputPaginationDto,
+    layer: ApiLayer,
+  ): Promise<PaginatedItemInCart | CursorPaginatedItemsInCart> {
     const shopCart = await this.shopCartService.findOneByUserId(userId);
 
-    const total = await this.prismaService.itemsInCart.count({
-      where: {
-        shopCartId: shopCart.id,
-      },
-    });
+    if (layer === ApiLayer.REST) {
+      const total = await this.prismaService.itemsInCart.count({
+        where: {
+          shopCartId: shopCart.id,
+        },
+      });
+      const prismaPagination = RESTpaginateParams({ page, perPage });
+      const pageInfo = RESTpaginationSerializer(total, { page, perPage });
+      const data = await this.prismaService.itemsInCart.findMany({
+        ...prismaPagination,
+        where: {
+          shopCartId: shopCart.id,
+        },
+        include: {
+          product: {},
+        },
+      });
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+      return {
+        pageInfo,
+        data: plainToClass(ItemInCartDto, data),
+      };
+    } else {
+      const prismaPagination = GQLpaginateParams({ first, after });
+      const data = await this.prismaService.itemsInCart.findMany({
+        orderBy: {
+          id: 'asc',
+        },
+      });
+      const edge = await this.prismaService.itemsInCart.findMany({
+        ...prismaPagination,
+        where: {
+          shopCartId: shopCart.id,
+        },
+        include: {
+          product: {},
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
 
-    const data = await this.prismaService.itemsInCart.findMany({
-      ...prismaPagination,
-      where: {
-        shopCartId: shopCart.id,
-      },
-      include: {
-        product: {},
-      },
-    });
+      const plainData = plainToClass(ItemInCartDto, edge);
+      const edges = getEdges(plainData);
 
-    return {
-      pageInfo,
-      data,
-    };
+      const pageInfo = GQLpaginationSerializer<ItemsInCart>(data, edge, {
+        first,
+        after,
+      });
+
+      return {
+        edges,
+        pageInfo,
+      };
+    }
   }
 
   async findOneById(id: string): Promise<ItemInCartDto> {
