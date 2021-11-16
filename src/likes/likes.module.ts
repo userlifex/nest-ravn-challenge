@@ -7,6 +7,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { SendgridModule } from '../common/sendgrid/sendgrid.module';
 import { ProductsModule } from '../products/products.module';
+import { LikeResolver } from './resolvers/like.resolver';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { ProductsModule } from '../products/products.module';
     SendgridModule,
     ProductsModule,
   ],
-  providers: [LikesService],
+  providers: [LikesService, LikeResolver],
   controllers: [LikesController],
   exports: [LikesService],
 })

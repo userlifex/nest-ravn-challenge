@@ -8,6 +8,11 @@ import { UpdateProductInput } from '../dtos/inputs/update-product.input';
 import { PaginatedProducts, ProductModel } from '../dtos/models/product.model';
 import { UpdateProductDto } from '../dtos/request/update-product.dto';
 import { ProductsService } from '../services/products.service';
+import { UseGuards } from '@nestjs/common';
+import { GqlJwtAuthGuard } from 'src/auth/guards/gql-jwt.guard';
+import { RolesGuard } from 'src/common/guards/role.guard';
+import { Role } from 'src/common/decorators/role.decorator';
+import { Roles } from '@prisma/client';
 
 @Resolver(() => ProductModel)
 export class ProductResolver {
@@ -32,7 +37,8 @@ export class ProductResolver {
     return productsRsp;
   }
 
-  @Public()
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Role(Roles.moderator)
   @Mutation(() => ProductModel)
   async createProduct(
     @Args('input') input: CreateProductInput,
@@ -43,7 +49,8 @@ export class ProductResolver {
     return plainToClass(ProductModel, productRsp);
   }
 
-  @Public()
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Role(Roles.moderator)
   @Mutation(() => ProductModel)
   async updateProduct(
     @Args('id') id: string,
@@ -53,6 +60,14 @@ export class ProductResolver {
     const productRsp = await this.productsService.update(id, dto);
 
     return plainToClass(ProductModel, productRsp);
+  }
+
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Role(Roles.moderator)
+  @Mutation(() => ProductModel)
+  async deleteProduct(@Args('id') id: string): Promise<ProductModel> {
+    const product = await this.productsService.delete(id);
+    return plainToClass(ProductModel, product);
   }
   // @Query(() => any)
   // async findPosts(@Args() args: PaginationArgs): Promise<any> {

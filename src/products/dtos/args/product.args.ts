@@ -7,5 +7,10 @@ export class ProductArgs extends PaginationArgs {
   @Field({ defaultValue: '' })
   @IsOptional()
   @IsString()
+  readonly id?: string;
+
+  @Field({ defaultValue: '' })
+  @IsOptional()
+  @IsString()
   readonly categoryId?: string;
 }
