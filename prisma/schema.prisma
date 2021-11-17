@@ -48,7 +48,7 @@ model Product {
   lastLikeUserId  String? @map("last_like_user_id")
   attachmentId    String? @map("attachment_id")
   name            String
-  price           Decimal
+  price           Float 
   stock           Int
   description     String?
   numLikes        Int @map("num_likes") @default(0)
@@ -115,8 +115,8 @@ model ItemsInCart {
 model Order {
   id              String @id() @default(uuid())
   userId          String @map("user_id")
-  total  	        Decimal
 
+  total  	        Float 
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
@@ -132,8 +132,8 @@ model ItemOrdered {
   productId       String @map("product_id")
   orderId 	      String @map("order_id")
   quantity        Int @default(0)
-  sellPrice       Decimal @map("sell_price") 
-  subTotal 	      Decimal @map("sub_total")
+  sellPrice       Float  @map("sell_price") 
+  subTotal 	      Float  @map("sub_total")
 
   createdAt  	    DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")

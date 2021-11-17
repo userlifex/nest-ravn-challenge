@@ -1,3 +1,3 @@
-import { UserDto } from 'src/auth/dto/response/user.dto';
+import { UserDto } from '../../auth/dto/response/user.dto';
 
 export type UserEntity = UserDto;

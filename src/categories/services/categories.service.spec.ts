@@ -7,9 +7,10 @@ import * as utils from '../../utils';
 describe('CategoriesService', () => {
   let categoriesService: CategoriesService;
   let prismaService: PrismaService;
+  let module: TestingModule;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [PrismaModule],
       providers: [CategoriesService],
     }).compile();
@@ -22,6 +23,7 @@ describe('CategoriesService', () => {
 
   afterAll(async () => {
     await prismaService.$disconnect();
+    //module.close();
   });
 
   it('should categories services should be defined', () => {
@@ -66,9 +68,9 @@ describe('CategoriesService', () => {
 
   it('should return all categories', async () => {
     const categories = await categoriesService.find({ page: 1, perPage: 10 });
-    const spy = jest.spyOn(utils, 'paginateParams');
+    const spy = jest.spyOn(utils, 'RESTpaginateParams');
 
-    const paginate = utils.paginateParams({ page: 1, perPage: 10 });
+    const paginate = utils.RESTpaginateParams({ page: 1, perPage: 10 });
 
     expect(spy).toHaveBeenCalled();
     expect(paginate).toEqual({ take: 10, skip: 0 });

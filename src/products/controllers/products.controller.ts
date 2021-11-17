@@ -15,24 +15,24 @@ import {
 import { Roles } from '@prisma/client';
 import { Public } from '../../common/decorators/public.decorator';
 import { Role } from '../../common/decorators/role.decorator';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { UpdateProductDto } from '../dto/update-product.dto';
+import { CreateProductDto } from '../dtos/request/create-product.dto';
+import { UpdateProductDto } from '../dtos/request/update-product.dto';
 import { ProductsService } from '../services/products.service';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { PaginatedProduct } from '../dtos/response/product-info.dto';
 
 @ApiTags('products')
 @Controller()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Public()
   @Get('products')
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
-  ) {
+  ): Promise<PaginatedProduct> {
     return this.productsService.find({ page, perPage });
   }
 
@@ -79,7 +79,7 @@ export class ProductsController {
   @Public()
   @Get('categories/:id/products')
   async getAllbyCategory(
-    @Param('categoryId') categoryId: string,
+    @Param('id') categoryId: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
   ) {

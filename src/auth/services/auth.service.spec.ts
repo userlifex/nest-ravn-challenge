@@ -87,14 +87,14 @@ describe('AuthService', () => {
     expect(result).toHaveProperty('id');
   });
 
-  it('should login an user and generate a token', async () => {
+  it('should log in an user and generate a token', async () => {
     const user = {
       name: 'alvaro',
       email: 'alvaro@gmail.com',
       password: '123456',
     };
     const userRegistered = await authService.signup(user);
-    const result = await authService.login(userRegistered);
+    const result = await authService.login(userRegistered.email);
 
     expect(result).toHaveProperty('access_token');
   });

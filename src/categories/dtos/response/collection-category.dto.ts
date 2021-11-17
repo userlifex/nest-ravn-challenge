@@ -1,5 +1,5 @@
 import { IsObject } from 'class-validator';
-import { InfoPaginationDto } from 'src/common/dtos/info-pagination.dto';
+import { InfoPaginationDto } from '../../../common/dtos/info-pagination.dto';
 import { InfoCategoryDto } from './info-category.dto';
 
 export class CollectionCategoryDto {

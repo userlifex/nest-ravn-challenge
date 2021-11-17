@@ -19,8 +19,6 @@ export class AttachmentService {
       })
       .promise();
 
-    console.log(uploadResult);
-
     const newFile = await this.prismaService.attachment.create({
       data: {
         key: uploadResult.Key,

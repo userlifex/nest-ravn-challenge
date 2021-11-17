@@ -5,11 +5,21 @@ import {
 } from '@nestjs/common';
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
-import { paginateParams, paginationSerializer } from '../../utils';
+import {
+  ApiLayer,
+  GQLPageSerializer,
+  GQLpaginateParams,
+  RESTpaginateParams,
+  RESTpaginationSerializer,
+} from '../../utils';
 import { UsersService } from '../../users/services/users.service';
 import { ProductsService } from '../../products/services/products.service';
 import { ItemsInCartService } from '../../items-in-cart/services/items-in-cart.service';
 import { ShopcartsService } from '../../shopcarts/services/shopcarts.service';
+import { getEdges } from '../../common/dtos/args/cursor-pagination.args';
+import { plainToClass } from 'class-transformer';
+import { OrderModel } from '../dtos/models/order.model';
+import { Order } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
@@ -21,12 +31,12 @@ export class OrdersService {
     private readonly shopcartsService: ShopcartsService,
   ) {}
 
-  async find({ page, perPage }: InputPaginationDto) {
-    const prismaPagination = paginateParams({ page, perPage });
+  async findRest({ page, perPage }: InputPaginationDto) {
+    const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.order.count({});
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.order.findMany({
       ...prismaPagination,
@@ -41,12 +51,61 @@ export class OrdersService {
     };
   }
 
+  async findGql({ first, after }: InputPaginationDto) {
+    const prismaPagination = GQLpaginateParams({ first, after });
+
+    const { firstCursor, lastCursor } = await this.prismaService.getBounds(
+      'order',
+    );
+
+    const data = await this.prismaService.order.findMany({
+      ...prismaPagination,
+    });
+
+    const edges = getEdges(plainToClass(OrderModel, data));
+    const pageInfo = GQLPageSerializer<Order>(firstCursor, lastCursor, data);
+
+    return {
+      edges,
+      pageInfo,
+    };
+  }
+
+  async find(pagination: InputPaginationDto, layer = ApiLayer.REST) {
+    if (layer === ApiLayer.GQL) {
+      return await this.findGql(pagination);
+    }
+
+    return await this.findRest(pagination);
+  }
+
+  async findByUserIdGQL(userId: string, { first, after }: InputPaginationDto) {
+    const prismaPagination = GQLpaginateParams({ first, after });
+
+    const { firstCursor, lastCursor } = await this.prismaService.getBounds(
+      'order',
+    );
+
+    const data = await this.prismaService.order.findMany({
+      where: { userId },
+      ...prismaPagination,
+    });
+
+    const edges = getEdges(plainToClass(OrderModel, data));
+    const pageInfo = GQLPageSerializer<Order>(firstCursor, lastCursor, data);
+
+    return {
+      edges,
+      pageInfo,
+    };
+  }
+
   async findByUserId(userId: string, { page, perPage }: InputPaginationDto) {
-    const prismaPagination = paginateParams({ page, perPage });
+    const prismaPagination = RESTpaginateParams({ page, perPage });
 
     const total = await this.prismaService.order.count({ where: { userId } });
 
-    const pageInfo = paginationSerializer(total, { page, perPage });
+    const pageInfo = RESTpaginationSerializer(total, { page, perPage });
 
     const data = await this.prismaService.order.findMany({
       where: { userId },
@@ -68,7 +127,7 @@ export class OrdersService {
       rejectOnNotFound: false,
     });
 
-    if (order.userId !== userId) {
+    if (order?.userId !== userId) {
       throw new NotFoundException();
     }
 
