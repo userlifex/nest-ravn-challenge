@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { TokensService } from './tokens.service';
 import { PrismaService } from '../../prisma/services/prisma.service';
-import { JWTPayload } from 'src/auth/dto/response/jwt.payload.dto';
+import { JWTPayload } from '../../auth/dto/response/jwt.payload.dto';
 
 describe('TokensService', () => {
   let tokensService: TokensService;
@@ -52,10 +52,14 @@ describe('TokensService', () => {
 
   it('should return a userId with token', async () => {
     const user = await prismaService.user.create({
-      data: { name: 'user', email: 'user@mail.co', password: '123456' },
+      data: {
+        name: 'amadeojpc',
+        email: 'amadeojpc@mail.co',
+        password: '123456',
+      },
     });
 
-    const token = await prismaService.token.create({
+    await prismaService.token.create({
       data: { token: 'my.token', userId: user.id, expirationDate: new Date() },
     });
 

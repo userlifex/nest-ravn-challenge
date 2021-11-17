@@ -1,8 +1,8 @@
 import { Product } from '.prisma/client';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { CursorPaginated } from 'src/common/dtos/args/cursor-pagination.args';
-import { GqlPaginatedType } from 'src/common/dtos/gql-pagination.model';
-import { ProductModel } from 'src/products/dtos/models/product.model';
+import { CursorPaginated } from '../../common/dtos/args/cursor-pagination.args';
+import { GqlPaginatedType } from '../../common/dtos/gql-pagination.model';
+import { ProductModel } from '../../products/dtos/models/product.model';
 
 @ObjectType()
 export class ItemInCartModel {

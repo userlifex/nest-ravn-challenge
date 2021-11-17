@@ -1,7 +1,7 @@
 import { ShopCart } from '.prisma/client';
 import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { UserEntity } from '../../common/types';
 import { ShopCartDto } from '../dto/response/shopcart.dto';

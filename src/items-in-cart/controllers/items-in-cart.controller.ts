@@ -13,8 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ApiLayer } from 'src/utils';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { ApiLayer } from '../../utils';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Role } from '../../common/decorators/role.decorator';
 import { UserEntity } from '../../common/types';

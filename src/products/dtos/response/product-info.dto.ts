@@ -1,5 +1,5 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
-import { RestPaginatedType } from 'src/common/dtos/rest-pagination.dto';
+import { RestPaginatedType } from '../../../common/dtos/rest-pagination.dto';
 import { InfoCategoryDto } from '../../../categories/dtos/response/info-category.dto';
 
 @Exclude()

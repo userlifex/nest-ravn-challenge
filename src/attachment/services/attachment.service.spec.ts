@@ -45,4 +45,16 @@ describe('Service', () => {
     console.log(attachment);
     expect(attachment).toHaveProperty('id');
   });
+
+  it('should generate a presigned url', async () => {
+    const attachment = await attachmentService.uploadFile(
+      Buffer.from('ok'),
+      'test.png',
+    );
+
+    const presignedUrl = await attachmentService.generatePresignedUrl(
+      attachment.key,
+    );
+    expect(presignedUrl.includes('AWSAccessKeyId')).toBeTruthy();
+  });
 });

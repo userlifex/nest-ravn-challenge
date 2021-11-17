@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { UserExist } from 'src/common/guards/user.exist.guard';
-import { UserEntity } from 'src/common/types';
+import { UserExist } from '../../common/guards/user.exist.guard';
+import { UserEntity } from '../../common/types';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { LogInInput } from '../dto/inputs/login.input';
 import { SignUpInput } from '../dto/inputs/signup.input';
