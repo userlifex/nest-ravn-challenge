@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Category } from '@prisma/client';
-import { InputPaginationDto } from 'src/common/dtos/input-pagination.dto';
+import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { RESTpaginateParams, RESTpaginationSerializer } from '../../utils';
 import { CreateCategoryDto } from '../dtos/request/create-category.dto';

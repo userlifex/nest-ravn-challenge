@@ -1,7 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Token } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
+import { UserDto } from 'src/auth/dto/response/user.dto';
 import { JWTPayload } from '../../auth/dto/response/jwt.payload.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
+import { TokenDto } from '../dto/token.dto';
 
 @Injectable()
 export class TokensService {
@@ -19,16 +22,13 @@ export class TokensService {
     });
   }
 
-  async findUserId(token: string) {
-    const user = await this.prismaService.token.findFirst({
+  async findUserId(token: string): Promise<Token> {
+    const tokenFound = await this.prismaService.token.findFirst({
       where: {
         token: token,
       },
-      select: {
-        userId: true,
-      },
     });
 
-    return user;
+    return tokenFound;
   }
 }

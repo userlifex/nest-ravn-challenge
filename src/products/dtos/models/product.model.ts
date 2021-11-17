@@ -2,7 +2,7 @@ import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import { IsObject, IsOptional } from 'class-validator';
 import { CategoryModel } from '../../../categories/dtos/models/category.model';
-import { GqlPaginatedType } from 'src/common/dtos/gql-pagination.model';
+import { GqlPaginatedType } from '../../../common/dtos/gql-pagination.model';
 
 @ObjectType()
 export class ProductModel {

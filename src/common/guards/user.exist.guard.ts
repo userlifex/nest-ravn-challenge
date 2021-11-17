@@ -7,7 +7,7 @@ import {
 import { GqlContextType, GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { LoginDto } from 'src/auth/dto/request/login.dto';
+import { LoginDto } from '../../auth/dto/request/login.dto';
 import { UsersService } from '../../users/services/users.service';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { GqlPaginatedType } from 'src/common/dtos/gql-pagination.model';
+import { GqlPaginatedType } from '../../../common/dtos/gql-pagination.model';
 
 @ObjectType()
 export class CategoryModel {
