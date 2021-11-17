@@ -5,7 +5,6 @@ import { CategoryModel } from '../../../categories/dtos/models/category.model';
 import { GqlPaginatedType } from '../../../common/dtos/gql-pagination.model';
 import { CursorPaginated } from '../../../common/dtos/args/cursor-pagination.args';
 
-
 @ObjectType()
 export class ProductModel {
   @Field()

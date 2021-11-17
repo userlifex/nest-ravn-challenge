@@ -18,7 +18,7 @@ import { RolesGuard } from '../../common/guards/role.guard';
 import { Role } from '../../common/decorators/role.decorator';
 import { Roles } from '@prisma/client';
 import { CursorPagination } from '../../common/dtos/args/cursor-pagination.args';
-import { ApiLayer } from 'src/utils';
+import { ApiLayer } from '../../utils';
 
 @Resolver(() => ProductModel)
 export class ProductResolver {

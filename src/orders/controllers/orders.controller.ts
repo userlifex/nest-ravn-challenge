@@ -43,8 +43,6 @@ export class OrdersController {
   @Role(Roles.customer)
   async getMyOrder(
     @CurrentUser() user: UserEntity,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number,
     @Param('id') orderId: string,
   ) {
     return this.ordersService.findOrderByUserId(user.id, orderId);

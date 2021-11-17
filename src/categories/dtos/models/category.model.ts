@@ -1,7 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GqlPaginatedType } from '../../../common/dtos/gql-pagination.model';
-import { CursorPaginated } from 'src/common/dtos/args/cursor-pagination.args';
-
+import { CursorPaginated } from '../../../common/dtos/args/cursor-pagination.args';
 
 @ObjectType()
 export class CategoryModel {

@@ -17,9 +17,8 @@ import { UpdateCategoryInput } from '../dtos/inputs/udpate-category.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlJwtAuthGuard } from '../../auth/guards/gql-jwt.guard';
 import { RolesGuard } from '../../common/guards/role.guard';
-import { CursorPagination } from 'src/common/dtos/args/cursor-pagination.args';
-import { ApiLayer } from 'src/utils';
-
+import { CursorPagination } from '../../common/dtos/args/cursor-pagination.args';
+import { ApiLayer } from '../../utils';
 
 @Resolver('categories')
 export class CategoriesResolver {

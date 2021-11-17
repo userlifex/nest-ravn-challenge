@@ -1,4 +1,6 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { IsNumber } from 'class-validator';
+import { CursorPaginated } from '../../../common/dtos/args/cursor-pagination.args';
 import { ItemOrderedModel } from '../../../items-ordered/dtos/models/item-ordered.model';
 
 @ObjectType()
@@ -10,6 +12,7 @@ export class OrderModel {
   readonly userId: string;
 
   @Field((type) => Float)
+  @IsNumber()
   readonly total: number;
 
   @Field()
@@ -21,3 +24,6 @@ export class OrderModel {
   @Field((type) => [ItemOrderedModel], { nullable: true })
   readonly itemsOrdered?: ItemOrderedModel[];
 }
+
+@ObjectType()
+export class CursorPaginatedOrders extends CursorPaginated(OrderModel) {}
