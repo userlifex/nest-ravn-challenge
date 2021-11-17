@@ -34,4 +34,25 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     await this.token.deleteMany({});
     await this.user.deleteMany({});
   }
+
+  async getBounds(model: string) {
+    const firstElement = await this[`${model}`].findMany({
+      select: {
+        id: true,
+      },
+      take: 1,
+    });
+
+    const lastElement = await this[`${model}`].findMany({
+      select: {
+        id: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      take: 1,
+    });
+
+    return { firstCursor: firstElement[0].id, lastCursor: lastElement[0].id };
+  }
 }

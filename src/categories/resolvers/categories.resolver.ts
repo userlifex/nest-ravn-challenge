@@ -6,6 +6,7 @@ import { Role } from '../../common/decorators/role.decorator';
 import { PaginationArgs } from '../../common/dtos/args/pagination.args';
 import {
   CategoryModel,
+  CursorPaginatedCategories,
   PaginatedCategories,
 } from '../dtos/models/category.model';
 import { CategoriesService } from '../services/categories.service';
@@ -16,16 +17,22 @@ import { UpdateCategoryInput } from '../dtos/inputs/udpate-category.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlJwtAuthGuard } from '../../auth/guards/gql-jwt.guard';
 import { RolesGuard } from '../../common/guards/role.guard';
+import { CursorPagination } from 'src/common/dtos/args/cursor-pagination.args';
+import { ApiLayer } from 'src/utils';
+
 
 @Resolver('categories')
 export class CategoriesResolver {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Public()
-  @Query((returns) => PaginatedCategories)
-  async getAllCategories(@Args() args: PaginationArgs) {
-    const { page, perPage } = args;
-    const categories = await this.categoriesService.find({ page, perPage });
+  @Query(() => CursorPaginatedCategories)
+  async getAllCategories(@Args() args: CursorPagination) {
+    const { first, after } = args;
+    const categories = await this.categoriesService.find(
+      { first, after },
+      ApiLayer.GQL,
+    );
 
     return categories;
   }

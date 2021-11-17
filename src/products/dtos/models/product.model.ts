@@ -3,6 +3,8 @@ import { Type } from 'class-transformer';
 import { IsObject, IsOptional } from 'class-validator';
 import { CategoryModel } from '../../../categories/dtos/models/category.model';
 import { GqlPaginatedType } from '../../../common/dtos/gql-pagination.model';
+import { CursorPaginated } from '../../../common/dtos/args/cursor-pagination.args';
+
 
 @ObjectType()
 export class ProductModel {
@@ -37,3 +39,6 @@ export class ProductModel {
 
 @ObjectType()
 export class PaginatedProducts extends GqlPaginatedType(ProductModel) {}
+
+@ObjectType()
+export class CursorPaginatedProducts extends CursorPaginated(ProductModel) {}
