@@ -6,7 +6,7 @@ import { SendgridModule } from '../../common/sendgrid/sendgrid.module';
 import { CategoriesModule } from '../../categories/categories.module';
 import { ProductsService } from './products.service';
 import { PrismaService } from '../../prisma/services/prisma.service';
-import { CreateProductDto } from '../dto/create-product.dto';
+import { CreateProductDto } from '../dtos/request/create-product.dto';
 
 describe('ProductsService', () => {
   let module: TestingModule;
