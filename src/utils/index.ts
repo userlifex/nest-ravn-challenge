@@ -1,6 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { IPageInfo } from 'src/common/dtos/args/cursor-pagination.args';
-import { ItemInCartDto } from 'src/items-in-cart/dto/response/item.in.cart.dto';
+import { IPageInfo } from '../common/dtos/args/cursor-pagination.args';
 import { InfoPaginationDto } from '../common/dtos/info-pagination.dto';
 import { InputPaginationDto } from '../common/dtos/input-pagination.dto';
 import { PrismaPaginationDto } from '../common/dtos/prisma-pagination.dto';
@@ -63,15 +62,21 @@ export const RESTpaginationSerializer = (
 export function GQLpaginationSerializer<T extends { id: string }>(
   data: Array<T>,
   edge: Array<T>,
-  query: InputPaginationDto,
 ): IPageInfo {
-  const startCursor = edge[0].id;
-  const endCursor = edge[edge.length - 1].id;
+  let startCursor = null;
+  let endCursor = null;
+  let hasPreviousPage = false;
+  let hasNextPage = false;
 
-  const startIndex = data.findIndex((element) => element.id == startCursor);
-  const endIndex = data.findIndex((element) => element.id == endCursor);
-  const hasPreviousPage = startIndex > 0 ? true : false;
-  const hasNextPage = endIndex < edge.length - 1 ? true : false;
+  if (data.length !== 0) {
+    startCursor = edge[0].id;
+    endCursor = edge[edge.length - 1].id;
+
+    const startIndex = data.findIndex((element) => element.id == startCursor);
+    const endIndex = data.findIndex((element) => element.id == endCursor);
+    hasPreviousPage = startIndex > 0 ? true : false;
+    hasNextPage = endIndex < data.length - 1 ? true : false;
+  }
 
   return {
     startCursor,

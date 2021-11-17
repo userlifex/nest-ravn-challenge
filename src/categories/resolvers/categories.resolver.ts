@@ -2,7 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Roles } from '@prisma/client';
 import { plainToClass } from 'class-transformer';
 import { Public } from '../../common/decorators/public.decorator';
-import { Role } from 'src/common/decorators/role.decorator';
+import { Role } from '../../common/decorators/role.decorator';
 import { PaginationArgs } from '../../common/dtos/args/pagination.args';
 import {
   CategoryModel,
@@ -15,10 +15,11 @@ import { CreateCategoryDto } from '../dtos/request/create-category.dto';
 import { UpdateCategoryDto } from '../dtos/request/update-category.dto';
 import { UpdateCategoryInput } from '../dtos/inputs/udpate-category.input';
 import { UseGuards } from '@nestjs/common';
-import { GqlJwtAuthGuard } from 'src/auth/guards/gql-jwt.guard';
-import { RolesGuard } from 'src/common/guards/role.guard';
+import { GqlJwtAuthGuard } from '../../auth/guards/gql-jwt.guard';
+import { RolesGuard } from '../../common/guards/role.guard';
 import { CursorPagination } from 'src/common/dtos/args/cursor-pagination.args';
 import { ApiLayer } from 'src/utils';
+
 
 @Resolver('categories')
 export class CategoriesResolver {

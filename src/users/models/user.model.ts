@@ -1,6 +1,6 @@
 import { Roles, ShopCart } from '.prisma/client';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { ShopCartModel } from 'src/shopcarts/models/shopcart.model';
+import { ShopCartModel } from '../../shopcarts/models/shopcart.model';
 
 @ObjectType()
 export class UserModel {

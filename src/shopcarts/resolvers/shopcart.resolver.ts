@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Resolver } from '@nestjs/graphql';
-import { GqlJwtAuthGuard } from 'src/auth/guards/gql-jwt.guard';
+import { GqlJwtAuthGuard } from '../../auth/guards/gql-jwt.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { UserEntity } from '../../common/types';
 import { ShopCartModel } from '../models/shopcart.model';

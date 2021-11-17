@@ -15,7 +15,7 @@ import { LoginDto } from '../dto/request/login.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { AuthService } from '../services/auth.service';
 import { CurrentUser } from '../decorators/current-user.decorator';
-import { UserEntity } from 'src/common/types';
+import { UserEntity } from '../../common/types';
 
 @ApiTags('auth')
 @Controller('auth')

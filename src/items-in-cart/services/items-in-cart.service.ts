@@ -1,8 +1,7 @@
 import { ItemsInCart } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { elementAt } from 'rxjs';
-import { getEdges } from 'src/common/dtos/args/cursor-pagination.args';
+import { getEdges } from '../../common/dtos/args/cursor-pagination.args';
 import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { ProductsService } from '../../products/services/products.service';
@@ -81,10 +80,7 @@ export class ItemsInCartService {
       const plainData = plainToClass(ItemInCartDto, edge);
       const edges = getEdges(plainData);
 
-      const pageInfo = GQLpaginationSerializer<ItemsInCart>(data, edge, {
-        first,
-        after,
-      });
+      const pageInfo = GQLpaginationSerializer<ItemsInCart>(data, edge);
 
       return {
         edges,
