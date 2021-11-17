@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { AuthService } from 'src/auth/services/auth.service';
 import { Category, PrismaClient } from '@prisma/client';
-import { CreateCategoryDto } from 'src/categories/dto/create-category.dto';
+import { CreateCategoryDto } from '../src/categories/dtos/request/create-category.dto';
 
 async function main() {
   const hashPassword = async (password) => {

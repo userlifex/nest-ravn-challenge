@@ -6,7 +6,8 @@ import { SendgridModule } from '../../common/sendgrid/sendgrid.module';
 import { CategoriesModule } from '../../categories/categories.module';
 import { ProductsService } from './products.service';
 import { PrismaService } from '../../prisma/services/prisma.service';
-import { CreateProductDto } from '../dto/create-product.dto';
+import { CreateProductDto } from '../dtos/request/create-product.dto';
+import { ApiLayer } from '../../utils';
 
 describe('ProductsService', () => {
   let module: TestingModule;
@@ -185,5 +186,40 @@ describe('ProductsService', () => {
 
     expect(products).toHaveProperty('data');
     expect(products).toHaveProperty('pageInfo');
+  });
+
+  it('should get many products with GQL', async () => {
+    const countProducts = await prismaService.product.createMany({
+      data: [
+        {
+          name: '1',
+          price: 12,
+          stock: 10,
+        },
+        {
+          name: '2',
+          price: 12,
+          stock: 10,
+        },
+        {
+          name: '3',
+          price: 12,
+          stock: 10,
+        },
+        {
+          name: '4',
+          price: 12,
+          stock: 10,
+        },
+      ],
+    });
+
+    const products = await productsService.find(
+      { first: 10, after: undefined },
+      ApiLayer.GQL,
+    );
+
+    expect(products).toHaveProperty('pageInfo');
+    expect(products).toHaveProperty('edges');
   });
 });

@@ -1,40 +1,34 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { IsInt, IsObject, IsOptional, IsString } from 'class-validator';
-import { InfoCategoryDto } from 'src/categories/dto/info-category.dto';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { RestPaginatedType } from '../../../common/dtos/rest-pagination.dto';
+import { InfoCategoryDto } from '../../../categories/dtos/response/info-category.dto';
 
 @Exclude()
 export class ProductInfoDto {
   @Expose()
-  @IsString()
   readonly id: string;
 
   @Expose()
-  @IsObject()
   readonly category: InfoCategoryDto;
 
   @Expose()
-  @IsString()
   readonly name: string;
 
   @Expose()
-  @Transform(({ value }) => value ?? 0)
-  @IsOptional()
-  //@IsNumber({ allowNaN: true, maxDecimalPlaces: 2 })
+  @Type(() => Number)
   readonly price: number;
 
   @Expose()
-  @IsInt({})
   readonly stock: number;
 
   @Expose()
-  @IsString()
   readonly imgUrl: string;
 
-  @Expose()
   @Transform(({ value }) => value?.toISOString())
   readonly createdAt: Date;
 
-  @Expose()
   @Transform(({ value }) => value?.toISOString())
   readonly updatedAt: Date;
 }
+
+@Exclude()
+export class PaginatedProduct extends RestPaginatedType(ProductInfoDto) {}

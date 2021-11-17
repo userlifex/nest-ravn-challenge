@@ -1,5 +1,6 @@
 import { ItemsInCart } from '.prisma/client';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { ItemInCartDto } from '../../../items-in-cart/dto/response/item.in.cart.dto';
 
 @Exclude()
 export class ShopCartDto {
@@ -7,5 +8,6 @@ export class ShopCartDto {
   id: string;
 
   @Expose()
-  items: ItemsInCart[];
+  @Type(() => ItemInCartDto)
+  itemsInCart: ItemsInCart[];
 }

@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { CreateProductDto } from '../../products/dtos/request/create-product.dto';
 import { AuthModule } from '../../auth/auth.module';
 import { AuthService } from '../../auth/services/auth.service';
 import { jwtConfigMock, jwtMockService } from '../../common/mocks/default.mock';
@@ -61,25 +61,52 @@ describe('ItemsInCartService', () => {
     expect(itemsInCartService).toBeDefined();
   });
 
-  it('should return all items-in-cart', async () => {
+  it('should return all items-in-cart for REST layer', async () => {
     const user = {
       name: 'amadeo',
       email: 'amadeo@gmail.com',
       password: '123456',
     };
     const userRegistered = await authService.signup(user);
-    const cartItems = await itemsInCartService.find(userRegistered.id, {
-      page: 1,
-      perPage: 10,
-    });
-    const spy = jest.spyOn(utils, 'paginateParams');
+    const cartItems = await itemsInCartService.find(
+      userRegistered.id,
+      {
+        page: 1,
+        perPage: 10,
+      },
+      utils.ApiLayer.REST,
+    );
+    const spy = jest.spyOn(utils, 'RESTpaginateParams');
 
-    const paginate = utils.paginateParams({ page: 1, perPage: 10 });
+    const paginate = utils.RESTpaginateParams({ page: 1, perPage: 10 });
 
     expect(spy).toHaveBeenCalled();
     expect(paginate).toEqual({ take: 10, skip: 0 });
     expect(cartItems).toHaveProperty('pageInfo');
     expect(cartItems).toHaveProperty('data');
+    spy.mockRestore();
+  });
+
+  it('should return all items-in-cart for GQL layer', async () => {
+    const user = {
+      name: 'amadeopc',
+      email: 'amadeopc@gmail.com',
+      password: '123456',
+    };
+    const userRegistered = await authService.signup(user);
+    const cartItems = await itemsInCartService.find(
+      userRegistered.id,
+      { first: 1, after: undefined },
+      utils.ApiLayer.GQL,
+    );
+    const spy = jest.spyOn(utils, 'GQLpaginateParams');
+
+    const paginate = utils.GQLpaginateParams({ first: 1, after: undefined });
+
+    expect(spy).toHaveBeenCalled();
+    expect(paginate).toEqual({ take: 1, skip: undefined, cursor: undefined });
+    expect(cartItems).toHaveProperty('edges');
+    expect(cartItems).toHaveProperty('pageInfo');
     spy.mockRestore();
   });
 

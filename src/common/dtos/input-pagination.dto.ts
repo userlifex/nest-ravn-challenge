@@ -1,15 +1,22 @@
-import { IsInt, IsOptional } from 'class-validator';
+import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class InputPaginationDto {
   @IsOptional()
   @IsInt()
-  readonly userId?: string;
+  @IsPositive()
+  readonly first?: number;
+
+  @IsOptional()
+  @IsString()
+  readonly after?: string;
 
   @IsOptional()
   @IsInt()
-  readonly page: number;
+  @IsPositive()
+  readonly page?: number;
 
   @IsOptional()
   @IsInt()
-  readonly perPage: number;
+  @IsPositive()
+  readonly perPage?: number;
 }
