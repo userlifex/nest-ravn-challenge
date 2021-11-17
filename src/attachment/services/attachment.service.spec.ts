@@ -42,7 +42,6 @@ describe('Service', () => {
       Buffer.from('ok'),
       'test.png',
     );
-    console.log(attachment);
     expect(attachment).toHaveProperty('id');
   });
 

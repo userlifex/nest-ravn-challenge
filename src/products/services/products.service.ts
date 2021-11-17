@@ -19,7 +19,7 @@ import {
   ProductInfoDto,
 } from '../dtos/response/product-info.dto';
 import { UpdateProductDto } from '../dtos/request/update-product.dto';
-import { getEdges } from 'src/common/dtos/args/cursor-pagination.args';
+import { getEdges } from '../../common/dtos/args/cursor-pagination.args';
 import { ProductModel } from '../dtos/models/product.model';
 
 @Injectable()

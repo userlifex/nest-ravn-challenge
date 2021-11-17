@@ -45,6 +45,11 @@ type CursorPaginatedItemsInCart {
   pageInfo: ItemInCartModelPageInfo
 }
 
+type CursorPaginatedOrders {
+  edges: [OrderModelEdge!]
+  pageInfo: OrderModelPageInfo
+}
+
 type CursorPaginatedProducts {
   edges: [ProductModelEdge!]
   pageInfo: ProductModelPageInfo
@@ -82,6 +87,17 @@ type ItemInCartModelPageInfo {
   startCursor: String
 }
 
+type ItemOrderedModel {
+  createdAt: String!
+  id: String!
+  orderId: String!
+  productId: String!
+  quantity: Int!
+  sellPrice: Float!
+  subTotal: Float!
+  updatedAt: String!
+}
+
 type LikeModel {
   createdAt: String!
   id: String!
@@ -105,11 +121,33 @@ type Mutation {
   deleteProduct(id: String!): ProductModel!
   likeProduct(productId: String!): LikeModel!
   logIn(data: LogInInput!): TokenModel!
+  makeOrder: OrderModel!
   recoverPassword(email: String!): PasswordRecoverModel!
   signUp(data: SignUpInput!): UserModel!
   update(id: String!, quantity: Float!): ItemInCartModel!
   updateCategory(id: String!, input: UpdateCategoryInput!): CategoryModel!
   updateProduct(id: String!, input: UpdateProductInput!): ProductModel!
+}
+
+type OrderModel {
+  createdAt: String!
+  id: String!
+  itemsOrdered: [ItemOrderedModel!]
+  total: Float!
+  updatedAt: String!
+  userId: String!
+}
+
+type OrderModelEdge {
+  cursor: String!
+  node: OrderModel!
+}
+
+type OrderModelPageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
 }
 
 type PaginatedProducts {
@@ -149,7 +187,10 @@ type Query {
   getAProfile(userId: String!): UserModel!
   getAll(after: String, first: Int = 10): CursorPaginatedItemsInCart!
   getAllCategories(after: String, first: Int = 10): CursorPaginatedCategories!
+  getAllOrders(after: String, first: Int = 10): CursorPaginatedOrders!
   getAllProducts(after: String, first: Int = 10): CursorPaginatedProducts!
+  getMyOrder(orderId: String!): OrderModel!
+  getMyOrders(after: String, first: Int = 10): CursorPaginatedOrders!
   getMyProfile: UserProfileModel!
   getOneById(itemId: String!): ItemInCartModel!
   getOneCategory(id: String!): CategoryModel!

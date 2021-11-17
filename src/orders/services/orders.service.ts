@@ -7,6 +7,8 @@ import { InputPaginationDto } from '../../common/dtos/input-pagination.dto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import {
   ApiLayer,
+  GQLPageSerializer,
+  GQLpaginateParams,
   RESTpaginateParams,
   RESTpaginationSerializer,
 } from '../../utils';
@@ -14,6 +16,10 @@ import { UsersService } from '../../users/services/users.service';
 import { ProductsService } from '../../products/services/products.service';
 import { ItemsInCartService } from '../../items-in-cart/services/items-in-cart.service';
 import { ShopcartsService } from '../../shopcarts/services/shopcarts.service';
+import { getEdges } from '../../common/dtos/args/cursor-pagination.args';
+import { plainToClass } from 'class-transformer';
+import { OrderModel } from '../dtos/models/order.model';
+import { Order } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
@@ -45,7 +51,25 @@ export class OrdersService {
     };
   }
 
-  async findGql({ first, after }: InputPaginationDto) {}
+  async findGql({ first, after }: InputPaginationDto) {
+    const prismaPagination = GQLpaginateParams({ first, after });
+
+    const { firstCursor, lastCursor } = await this.prismaService.getBounds(
+      'order',
+    );
+
+    const data = await this.prismaService.order.findMany({
+      ...prismaPagination,
+    });
+
+    const edges = getEdges(plainToClass(OrderModel, data));
+    const pageInfo = GQLPageSerializer<Order>(firstCursor, lastCursor, data);
+
+    return {
+      edges,
+      pageInfo,
+    };
+  }
 
   async find(pagination: InputPaginationDto, layer = ApiLayer.REST) {
     if (layer === ApiLayer.GQL) {
@@ -53,6 +77,27 @@ export class OrdersService {
     }
 
     return await this.findRest(pagination);
+  }
+
+  async findByUserIdGQL(userId: string, { first, after }: InputPaginationDto) {
+    const prismaPagination = GQLpaginateParams({ first, after });
+
+    const { firstCursor, lastCursor } = await this.prismaService.getBounds(
+      'order',
+    );
+
+    const data = await this.prismaService.order.findMany({
+      where: { userId },
+      ...prismaPagination,
+    });
+
+    const edges = getEdges(plainToClass(OrderModel, data));
+    const pageInfo = GQLPageSerializer<Order>(firstCursor, lastCursor, data);
+
+    return {
+      edges,
+      pageInfo,
+    };
   }
 
   async findByUserId(userId: string, { page, perPage }: InputPaginationDto) {
@@ -82,7 +127,7 @@ export class OrdersService {
       rejectOnNotFound: false,
     });
 
-    if (order.userId !== userId) {
+    if (order?.userId !== userId) {
       throw new NotFoundException();
     }
 
