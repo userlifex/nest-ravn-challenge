@@ -35,6 +35,8 @@ import { LikesModule } from './likes/likes.module';
     LikesModule,
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      introspection: true,
+      playground: true,
       sortSchema: true,
       context: ({ req, res, payload, connection }) => ({
         req,
